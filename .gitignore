@@ -1,0 +1,7 @@
+node_modules/
+out/
+.DS_Store
+tools/tts/.venv/
+tools/tts/models/
+tools/tts/samples/
+.env

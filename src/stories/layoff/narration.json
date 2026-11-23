@@ -1,0 +1,100 @@
+[
+  {
+    "id": "00",
+    "mark": "hook",
+    "text": "After twenty years... he was replaced by A.I."
+  },
+  {
+    "id": "01",
+    "mark": "start",
+    "text": "Year one. A desk, a badge, and a dream."
+  },
+  {
+    "id": "02",
+    "mark": "years",
+    "text": "For twenty years, the world kept changing. And he kept showing up."
+  },
+  {
+    "id": "03",
+    "mark": "email",
+    "text": "Then one morning, one email. His job would now be done by A.I."
+  },
+  {
+    "id": "04",
+    "mark": "box",
+    "text": "Twenty years... packed into one cardboard box."
+  },
+  {
+    "id": "05",
+    "mark": "market",
+    "text": "He started searching. So did thousands of skilled people, just like him."
+  },
+  {
+    "id": "06",
+    "mark": "bills",
+    "text": "But the bills never paused. The mortgage. Groceries. The kids' doctor."
+  },
+  {
+    "id": "07",
+    "mark": "months",
+    "text": "Months passed. No answers. His thoughts went in circles."
+  },
+  {
+    "id": "08",
+    "mark": "night",
+    "text": "One night, alone in the dark, he felt he had nothing left.",
+    "speed": 0.85
+  },
+  {
+    "id": "09",
+    "mark": "family",
+    "text": "Then he remembered who he was fighting for.",
+    "speed": 0.85
+  },
+  {
+    "id": "09b",
+    "mark": "familyb",
+    "text": "His wife. His little girl. They never cared about his job title. They only needed him."
+  },
+  {
+    "id": "10",
+    "mark": "study",
+    "text": "So every night, after bedtime, he learned. New skills. New tools. He built, and he grew."
+  },
+  {
+    "id": "11",
+    "mark": "run",
+    "text": "Five in the morning. Every single day. Stronger in body. Stronger in mind."
+  },
+  {
+    "id": "12",
+    "mark": "compete",
+    "text": "Thousands applied for the same jobs. He prepared like none of them."
+  },
+  {
+    "id": "13",
+    "mark": "no",
+    "text": "He heard no, again and again. Every no made him sharper."
+  },
+  {
+    "id": "14",
+    "mark": "yes",
+    "text": "Then one morning... another email. We'd like to offer you the role."
+  },
+  {
+    "id": "15",
+    "mark": "end",
+    "text": "[firmly] Bad days end."
+  },
+  {
+    "id": "15b",
+    "mark": "end2",
+    "text": "[with conviction] No storm lasts forever!"
+  },
+  {
+    "id": "16",
+    "mark": "outro",
+    "text": "Keep going.",
+    "speed": 0.85
+  }
+]
