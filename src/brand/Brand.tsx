@@ -25,9 +25,11 @@ const Paper: React.FC<{ruleGap?: number; margin?: number | null; children?: Reac
   }}>{children}</AbsoluteFill>
 );
 
-const Ink: React.FC<{w: number; h: number; items: DrawItem[]}> = ({w, h, items}) => (
+const Ink: React.FC<{w: number; h: number; items: DrawItem[]; transform?: string}> = ({w, h, items, transform}) => (
   <svg viewBox={`0 0 ${w} ${h}`} width={w} height={h} style={{position: 'absolute', inset: 0}}>
-    <Strokes frame={0} slots={staticSlots(items)} />
+    <g transform={transform}>
+      <Strokes frame={0} slots={staticSlots(items)} />
+    </g>
   </svg>
 );
 
@@ -60,9 +62,12 @@ export const AvatarFace: React.FC = () => {
     heart(286, 170, 1.5),
     ...pencil(640, G + 6, -62, 0.4),
   ];
+  // fit inside the platforms' circle crop with room to spare: the drawing (centre ~392,427,
+  // reach ~420 px) is scaled to reach ~330 px around the circle's centre
+  const fit = 'translate(400 400) scale(0.78) translate(-392 -427)';
   return (
     <Paper ruleGap={64} margin={null}>
-      <Ink w={800} h={800} items={items} />
+      <Ink w={800} h={800} items={items} transform={fit} />
     </Paper>
   );
 };
@@ -110,11 +115,13 @@ export const Watermark: React.FC = () => (
 /* ===================== 5. YouTube banner (2560 x 1440) ===================== */
 // Safe area visible everywhere (phones): 1546 x 423, centred → x 507..2053, y 508..931.
 export const Banner: React.FC = () => {
-  const G = 1150; // ground line for the little scenes left and right (outside the phone safe area)
-  // the life-line rail; it ends at the pencil tip, as if the pencil is drawing it right now
-  const RAIL = 'M60 1240 C500 1200 900 1270 1280 1235 C1660 1200 1980 1262 2290 1236';
+  // YouTube shows different parts of the banner per device:
+  //   TV: everything · desktop: the middle band (y 508..931, full width) · phones: centre 1546 x 423
+  // so every drawing lives inside the desktop band; the name sits in the phone-safe centre.
+  const G = 862; // ground line for both scenes
+  const RAIL_Y = 905;
+  const RAIL = `M60 ${RAIL_Y + 4} C500 ${RAIL_Y - 14} 900 ${RAIL_Y + 18} 1280 ${RAIL_Y + 2} C1660 ${RAIL_Y - 14} 2100 ${RAIL_Y + 16} 2440 ${RAIL_Y}`;
   const onRail = (x: number) => {
-    // y of the rail at x (sampled), so the dots sit exactly on the line
     const len = getLength(RAIL);
     let best = {x: 0, y: 0};
     for (let k = 0; k <= 600; k++) {
@@ -123,46 +130,44 @@ export const Banner: React.FC = () => {
     }
     return best.y;
   };
-  // the desk on the left: same seated figure as the videos, now with his chair and legs
-  const s = 0.62;
-  const px = 220;
+  // left: the desk (desktop-only zone)
+  const s = 0.5;
+  const f = s / 0.62; // leg/chair offsets were designed at scale 0.62
+  const px = 210;
   const top = G - DESK_TOP * s;
   const personY = top + 98 * s;
   const slabBottom = top + 22 * s;
+  const shoe = 'M-6 -7 C-6 -16 22 -16 32 -5 C34 2 28 6 -6 6 Z';
   const items: DrawItem[] = [
     {d: RAIL, w: 8},
-    ...[200, 640, 1280, 1880, 2160].map((x, k): DrawItem => {
+    ...[200, 640, 1280, 1880, 2290].map((x, k): DrawItem => {
       const red = k === 4;
       return {d: circ(x, onRail(x), 12), fill: red ? RED : INK, color: red ? RED : INK, w: 5};
     }),
-    {d: `M60 ${G} L480 ${G}`},
+    {d: `M60 ${G} L460 ${G}`},
     ...chairBackrest({x: px, y: personY - 92 * s, s}),
-    // chair under him: one pole between his legs down to a wide base, wheels outside his feet
-    {d: `M${px} ${slabBottom + 26} L${px} ${G - 20} M${px - 62} ${G - 20} L${px + 62} ${G - 20}`, w: 5},
-    {d: `${circ(px - 62, G - 10, 8)} ${circ(px + 62, G - 10, 8)}`, w: 4, fill: PAPER},
-    // his legs: knees just below the desk, lower legs angled slightly outward to his shoes
-    {d: `M${px - 12} ${slabBottom + 2} L${px - 24} ${slabBottom + 30} L${px - 32} ${G - 9} M${px + 12} ${slabBottom + 2} L${px + 24} ${slabBottom + 30} L${px + 32} ${G - 9}`, w: 6},
-    {d: `${place('M-6 -7 C-6 -16 22 -16 32 -5 C34 2 28 6 -6 6 Z', {x: px - 30, y: G - 6, s: 0.62, flip: true})} ${place('M-6 -7 C-6 -16 22 -16 32 -5 C34 2 28 6 -6 6 Z', {x: px + 30, y: G - 6, s: 0.62})}`, fill: PAPER, w: 4},
+    {d: `M${px} ${slabBottom + 26 * f} L${px} ${G - 20 * f} M${px - 62 * f} ${G - 20 * f} L${px + 62 * f} ${G - 20 * f}`, w: 5},
+    {d: `${circ(px - 62 * f, G - 10 * f, 8 * f)} ${circ(px + 62 * f, G - 10 * f, 8 * f)}`, w: 4, fill: PAPER},
+    {d: `M${px - 12 * f} ${slabBottom + 2} L${px - 24 * f} ${slabBottom + 30 * f} L${px - 32 * f} ${G - 9 * f} M${px + 12 * f} ${slabBottom + 2} L${px + 24 * f} ${slabBottom + 30 * f} L${px + 32 * f} ${G - 9 * f}`, w: 6},
+    {d: `${place(shoe, {x: px - 30 * f, y: G - 6 * f, s: 0.62 * f, flip: true})} ${place(shoe, {x: px + 30 * f, y: G - 6 * f, s: 0.62 * f})}`, fill: PAPER, w: 4},
     ...stick({x: px, y: personY, s, pose: 'atDesk', mood: 'smile', tie: true}),
-    ...desk({x: 280, y: G, s}),
-    ...laptopBack({x: px, y: top, s: 0.45}),
-    // right: where it leads — home, his wife and daughter, under the sun
-    // (kept left of the pencil so it never crosses the house)
-    {d: `M1880 ${G} L2330 ${G}`},
-    ...house({x: 2195, y: G, s: 0.55}, true),
-    // he is at his desk on the left; his wife and daughter wait for him at home
-    ...stick({x: 1930, y: G, s: 0.55, pose: 'cheer', hair: 'long', skirt: true, color: RED, mood: 'grin'}),
-    ...stick({x: 2015, y: G, s: 0.55, pose: 'cheer', child: true, hair: 'pigtails', skirt: true, color: RED, mood: 'grin'}),
-    ...sun(2440, 760, 38),
-    heart(1972, 880, 0.9),
-    // the pencil drawing the rail: tip on the line's end, held up so it stays inside the banner
-    ...pencil(2290, 1236, -58, 0.58),
+    ...desk({x: 260, y: G, s}),
+    ...laptopBack({x: px, y: top, s: 0.36}),
+    // right: home — his wife and daughter wait for him; the pencil draws the line to them
+    // (kept right of x 2053 so phones, which show only the centre, don't get half a family)
+    {d: `M2066 ${G} L2400 ${G}`},
+    ...stick({x: 2088, y: G, s: 0.42, pose: 'cheer', child: true, hair: 'pigtails', skirt: true, color: RED, mood: 'grin'}),
+    ...stick({x: 2150, y: G, s: 0.42, pose: 'cheer', hair: 'long', skirt: true, color: RED, mood: 'grin'}),
+    ...house({x: 2305, y: G, s: 0.4}, true),
+    heart(2118, 656, 0.7),
+    ...sun(2440, 590, 24),
+    ...pencil(2440, RAIL_Y, -68, 0.4),
   ];
   return (
     <Paper ruleGap={80} margin={140}>
       <Ink w={2560} h={1440} items={items} />
-      <AbsoluteFill style={{alignItems: 'center', top: 560}}>
-        <Wordmark size={230} tagline="Hand-drawn stories that keep you going." />
+      <AbsoluteFill style={{alignItems: 'center', top: 548}}>
+        <Wordmark size={220} tagline="Hand-drawn stories that keep you going." />
       </AbsoluteFill>
     </Paper>
   );
