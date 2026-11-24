@@ -1,2 +1,2 @@
-# daily-motivation
+# pencil-stories
 Daily motivation youtube videos
