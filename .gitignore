@@ -7,3 +7,4 @@ tools/tts/samples/
 .env
 secrets/
 tools/publish/.venv/
+__pycache__/

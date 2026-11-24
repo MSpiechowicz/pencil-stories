@@ -1,6 +1,7 @@
 """Compose an instrumental score with Eleven Music, cut to the video's section timings.
 
-Usage: npx tsx scripts/export-timeline.ts && tools/tts/.venv-cb/bin/python tools/eleven/music.py [seed ...]
+Usage: npx tsx scripts/export-timeline.ts && tools/tts/.venv-cb/bin/python tools/eleven/music.py [seed]
+One take per run (credits!): check the result; if it fails, run again with a different seed.
 Writes public/<story>/music/score.m4a (loudness-matched) and keeps the raw mp3 next to it.
 """
 import json
@@ -104,7 +105,9 @@ def gaps(path):
 
 
 used0, limit, _ = credits()
-seeds = [int(a) for a in sys.argv[1:]] or [11, 23, 37, 51, 67, 89]
+# ONE take per run (each costs ~1,500 credits): listen / check it, and only if it fails run again
+# with another seed. Several seeds in one call are allowed but must be asked for explicitly.
+seeds = [int(a) for a in sys.argv[1:]] or [101]
 raw = MUSIC / f"{SCORE.stem}-raw.mp3"  # per version: score-raw.mp3 / score-short-raw.mp3
 best = None
 for seed in seeds:

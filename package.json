@@ -13,7 +13,9 @@
     "still": "remotion still PagePreview out/layoff/page-preview.png",
     "typecheck": "tsc --noEmit",
     "covers": "remotion still CoverVertical out/layoff/cover-9x16.png && remotion still ThumbWide out/layoff/thumbnail-16x9.png",
-    "brand": "remotion still BrandAvatarFace brand/pencilstories-avatar-face.png && remotion still BrandAvatarIcon brand/pencilstories-avatar-icon.png && remotion still BrandBanner brand/pencilstories-youtube-banner.png && remotion still BrandWordmark brand/pencilstories-wordmark.png --image-format=png && remotion still BrandWatermark brand/pencilstories-youtube-watermark.png --image-format=png"
+    "brand": "remotion still BrandAvatarFace brand/pencilstories-avatar-face.png && remotion still BrandAvatarIcon brand/pencilstories-avatar-icon.png && remotion still BrandBanner brand/pencilstories-youtube-banner.png && remotion still BrandWordmark brand/pencilstories-wordmark.png --image-format=png && remotion still BrandWatermark brand/pencilstories-youtube-watermark.png --image-format=png",
+    "publish": "tools/publish/.venv/bin/python tools/publish/publish.py",
+    "publish:setup": "python3 -m venv tools/publish/.venv && tools/publish/.venv/bin/python -m pip install -q -r tools/publish/requirements.txt"
   },
   "dependencies": {
     "@remotion/cli": "^4.0.546",
