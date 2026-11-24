@@ -1,0 +1,117 @@
+[
+  {
+    "id": "00",
+    "mark": "hook",
+    "text": "[serious] After twenty years... [pause] he was replaced by A.I."
+  },
+  {
+    "id": "01",
+    "mark": "start",
+    "text": "[warmly] Year one. A desk, a badge, and a dream.",
+    "gap": 3.4
+  },
+  {
+    "id": "02",
+    "mark": "years",
+    "text": "[thoughtful] For twenty years, the world kept changing. And he kept showing up.",
+    "gap": 1.0
+  },
+  {
+    "id": "03",
+    "mark": "email",
+    "text": "[somber] Then one morning, one email. [pause] His job would now be done by A.I.",
+    "gap": 1.6
+  },
+  {
+    "id": "04",
+    "mark": "box",
+    "text": "[sad] Twenty years... [sighs] packed into one cardboard box.",
+    "gap": 1.3
+  },
+  {
+    "id": "05",
+    "mark": "market",
+    "text": "[heavily] He started searching. So did thousands of skilled people, just like him.",
+    "gap": 1.4
+  },
+  {
+    "id": "06",
+    "mark": "bills",
+    "text": "[tense] But the bills never paused. The mortgage. Groceries. The kids' doctor.",
+    "gap": 1.1
+  },
+  {
+    "id": "07",
+    "mark": "months",
+    "text": "[weary] Months passed. No answers. [pause] His thoughts went in circles.",
+    "gap": 1.3
+  },
+  {
+    "id": "08",
+    "mark": "night",
+    "text": "[softly] [sad] One night, alone in the dark... he felt he had nothing left.",
+    "speed": 0.85,
+    "gap": 2.2
+  },
+  {
+    "id": "09",
+    "mark": "family",
+    "text": "[quietly] [hopeful] Then he remembered who he was fighting for.",
+    "speed": 0.85,
+    "gap": 1.5
+  },
+  {
+    "id": "09b",
+    "mark": "familyb",
+    "text": "[warmly] His wife. His little girl. [tenderly] They never cared about his job title. They only needed him.",
+    "gap": 1.2
+  },
+  {
+    "id": "10",
+    "mark": "study",
+    "text": "[determined] So every night, after bedtime, he learned. New skills. New tools. He built, and he grew.",
+    "gap": 2.0
+  },
+  {
+    "id": "11",
+    "mark": "run",
+    "text": "[determined] Five in the morning. Every single day. Stronger in body. Stronger in mind.",
+    "gap": 1.3
+  },
+  {
+    "id": "12",
+    "mark": "compete",
+    "text": "[confident] Thousands applied for the same jobs. He prepared like none of them.",
+    "gap": 1.2
+  },
+  {
+    "id": "13",
+    "mark": "no",
+    "text": "[resolute] He heard no, again and again. [firmly] Every no made him sharper.",
+    "gap": 1.1
+  },
+  {
+    "id": "14",
+    "mark": "yes",
+    "text": "[hopeful] Then one morning... another email. [moved] We'd like to offer you the role.",
+    "gap": 2.2
+  },
+  {
+    "id": "15",
+    "mark": "end",
+    "text": "[powerfully] Bad days end.",
+    "gap": 2.0
+  },
+  {
+    "id": "15b",
+    "mark": "end2",
+    "text": "[with conviction] No storm lasts forever!",
+    "gap": 1.2
+  },
+  {
+    "id": "16",
+    "mark": "outro",
+    "text": "[slowly] [deep, low voice] Keep going.",
+    "speed": 0.85
+  }
+]

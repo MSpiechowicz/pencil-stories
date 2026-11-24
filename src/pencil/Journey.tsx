@@ -5,7 +5,7 @@ import {evolvePath} from '@remotion/paths';
 import {pencilAt, progressOf, textWidth, type Slot} from './draw';
 import {INK, PAPER} from './art';
 import {HAND_FONT} from './fonts';
-import {FILMS, TITLE_IN, ZOOM_FRAMES, type Variant} from './plan';
+import {FILMS, TITLE_IN, WIDE, ZOOM_FRAMES, type Variant} from './plan';
 import {Soundtrack} from './Soundtrack';
 import {HOOK_H, HookOnPage} from './Hook';
 
@@ -77,27 +77,57 @@ export const Strokes: React.FC<{frame: number; slots: Slot[]}> = ({frame, slots}
   </>
 );
 
-export const Journey: React.FC<{variant: Variant}> = ({variant}) => {
+/**
+ * Screen layouts. 'tall' is the 9:16 phone video: the page fills the screen.
+ * 'wide' is 16:9 for desktop / TV: the paper fills the whole screen and the story is drawn in a
+ * centred column, followed by its own camera planned for the shorter frame (see WIDE in plan.ts).
+ */
+/** 'tall2k': the phone video at 1440x2560 (YouTube Shorts) - the same framing, drawn sharper */
+export type Layout = 'tall' | 'tall2k' | 'wide';
+// (a function, not a constant: plan.ts and this file import each other)
+const layoutOf = (layout: Layout) =>
+  layout === 'wide' ? {w: WIDE.w, h: WIDE.h, s: WIDE.scale} : layout === 'tall2k' ? {w: 1440, h: 2560, s: 1440 / W} : {w: W, h: H, s: 1};
+
+export const Journey: React.FC<{variant: Variant; layout?: Layout}> = ({variant, layout = 'tall'}) => {
+  const L = layoutOf(layout);
+  const wide = layout === 'wide';
+  const VW = L.w / L.s; // visible page width / height in page units
+  const VH = L.h / L.s;
+  const ui = wide ? L.h / 1080 : L.w / W; // title text sized for the frame
   const film = FILMS[variant];
   const {PLAN, CAMERA, OUTRO_START, WORLD_H} = film;
   const frame = useCurrentFrame();
-  const cam = CAMERA[Math.min(frame, CAMERA.length - 1)];
+  const camera = wide ? film.CAMERA_WIDE : CAMERA;
+  // whole SCREEN pixels: the camera is planned in page units, and at the wide video's 0.93 scale a
+  // page unit is not a pixel, so lines would step by 0 or 1 pixel in a rhythm (a wavy shimmer)
+  const snap = (v: number) => Math.round(v * L.s) / L.s;
+  const top = snap(camera[Math.min(frame, camera.length - 1)]);
   // final pull-back that reveals the whole journey
   const z = interpolate(frame, [OUTRO_START, OUTRO_START + ZOOM_FRAMES], [0, 1], {
     extrapolateLeft: 'clamp', extrapolateRight: 'clamp', easing: Easing.inOut(Easing.cubic),
   });
   const fullH = WORLD_H + 160;
-  const fullW = (fullH * W) / H;
-  const vbH = H + (fullH - H) * z;
-  const vbW = W + (fullW - W) * z;
-  const vbX = (W - vbW) / 2;
-  const vbY = cam + (-80 - cam) * z;
-  const pt = pencilAt(PLAN.slots, frame, {x: 1250, y: cam + 1700 - HOOK_H});
+  const fullW = (fullH * VW) / VH;
+  const vbH = VH + (fullH - VH) * z;
+  const vbW = VW + (fullW - VW) * z;
+  // the drawings span page x ~139..983: in the wide video they are centred on screen by that span
+  const cx = wide ? 561 : W / 2;
+  const vbX = z === 0 ? snap(cx - vbW / 2) : cx - vbW / 2;
+  // notebook margin line: at the page's left edge in the phone video; in the wide video at the
+  // same proportion (~9%) from the left edge of the screen, like a real notebook page
+  // (pinned to the screen, also while the camera pulls back at the end, at a constant thickness)
+  const marginX = wide ? vbX + (96 / W) * vbW : 96;
+  const marginW = wide ? (3 * vbW) / VW : 3;
+  const vbY = top + (-80 - top) * z;
+  // paper: one page in the tall video; in the wide one it runs past both screen edges
+  const px0 = wide ? -20000 : 0;
+  const pw = wide ? W + 40000 : W;
+  const pt = pencilAt(PLAN.slots, frame, {x: 1250, y: top + VH - 220 - HOOK_H});
   const titleIn = interpolate(frame, [OUTRO_START + TITLE_IN - 4, OUTRO_START + TITLE_IN + 22], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
   const subIn = interpolate(frame, [OUTRO_START + 110, OUTRO_START + 140], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
   return (
     <AbsoluteFill style={{background: DESK}}>
-      <svg viewBox={`${vbX} ${vbY} ${vbW} ${vbH}`} width={W} height={H} style={{position: 'absolute', inset: 0}}>
+      <svg viewBox={`${vbX} ${vbY} ${vbW} ${vbH}`} width={L.w} height={L.h} style={{position: 'absolute', inset: 0}}>
         <defs>
           <pattern id="rules" width={W} height={72} patternUnits="userSpaceOnUse">
             <rect width={W} height={72} fill={PAPER} />
@@ -110,9 +140,9 @@ export const Journey: React.FC<{variant: Variant}> = ({variant}) => {
             <feDropShadow dx="0" dy="0" stdDeviation="30" floodColor="#000" floodOpacity="0.45" />
           </filter>
         </defs>
-        <rect x={0} y={-200} width={W} height={WORLD_H + 400} fill="url(#rules)" filter={z > 0 ? 'url(#page-shadow)' : undefined} />
-        <rect x={0} y={-200} width={W} height={WORLD_H + 400} fill="url(#grain)" opacity={0.06} style={{mixBlendMode: 'multiply'}} />
-        <rect x={96} y={-200} width={3} height={WORLD_H + 400} fill="#e3989b" />
+        <rect x={px0} y={-200} width={pw} height={WORLD_H + 400} fill="url(#rules)" filter={z > 0 && !wide ? 'url(#page-shadow)' : undefined} />
+        <rect x={px0} y={-200} width={pw} height={WORLD_H + 400} fill="url(#grain)" opacity={0.06} style={{mixBlendMode: 'multiply'}} />
+        <rect x={marginX} y={-200} width={marginW} height={WORLD_H + 400} fill="#e3989b" />
         <HookOnPage frame={frame} hook={film.def.hook} />
         <g transform={`translate(0 ${HOOK_H})`}>
           <Strokes frame={frame} slots={PLAN.slots} />
@@ -120,10 +150,10 @@ export const Journey: React.FC<{variant: Variant}> = ({variant}) => {
         </g>
       </svg>
       <AbsoluteFill style={{background: `rgba(20,18,17,${0.55 * titleIn})`}} />
-      <AbsoluteFill style={{alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 30}}>
-        <div style={{fontFamily: HAND_FONT, fontWeight: 700, fontSize: 170, color: PAPER, opacity: titleIn,
-          transform: `translateY(${(1 - titleIn) * 30}px)`}}>Keep going.</div>
-        <div style={{fontFamily: HAND_FONT, fontWeight: 500, fontSize: 58, color: '#f2c36b', opacity: subIn, textAlign: 'center'}}>
+      <AbsoluteFill style={{alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 30 * ui}}>
+        <div style={{fontFamily: HAND_FONT, fontWeight: 700, fontSize: 170 * ui, color: PAPER, opacity: titleIn,
+          transform: `translateY(${(1 - titleIn) * 30 * ui}px)`}}>Keep going.</div>
+        <div style={{fontFamily: HAND_FONT, fontWeight: 500, fontSize: 58 * ui, color: '#f2c36b', opacity: subIn, textAlign: 'center'}}>
           Follow for one reason a day<br />to keep going.
         </div>
       </AbsoluteFill>

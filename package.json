@@ -5,10 +5,13 @@
   "description": "Daily motivation YouTube Shorts / Instagram Reels, built with Remotion",
   "scripts": {
     "studio": "remotion studio",
-    "render": "remotion render LaidOff20Years out/layoff/.raw-laid-off-20-years.mp4 --crf=14 --x264-preset=slow && python3 scripts/master.py out/layoff/.raw-laid-off-20-years.mp4 out/layoff/laid-off-20-years.mp4 --remove-input",
-    "still": "remotion still PagePreview out/layoff/page.png",
+    "render": "npm run render:youtube && npm run render:shorts",
+    "render:youtube": "remotion render LaidOff20YearsWide out/layoff/.raw-layoff-youtube.mp4 --crf=14 --x264-preset=slow && python3 scripts/master.py out/layoff/.raw-layoff-youtube.mp4 out/layoff/layoff-youtube.mp4 --remove-input",
+    "render:shorts": "remotion render LaidOffShortYouTube out/layoff/.raw-layoff-youtube-shorts.mp4 --crf=14 --x264-preset=slow && python3 scripts/master.py out/layoff/.raw-layoff-youtube-shorts.mp4 out/layoff/layoff-youtube-shorts.mp4 --remove-input && remotion render LaidOffShortReels out/layoff/.raw-layoff-instagram-reels.mp4 --crf=16 --x264-preset=slow && python3 scripts/master.py out/layoff/.raw-layoff-instagram-reels.mp4 out/layoff/layoff-instagram-reels.mp4 --remove-input",
+    "render:brian": "remotion render LaidOff20Years out/layoff/.raw-brian-vertical.mp4 --crf=14 --x264-preset=slow && python3 scripts/master.py out/layoff/.raw-brian-vertical.mp4 out/layoff/brian-vertical.mp4 --remove-input",
+    "render:brian-short": "remotion render LaidOffShort out/layoff/.raw-brian-short.mp4 --crf=14 --x264-preset=slow && python3 scripts/master.py out/layoff/.raw-brian-short.mp4 out/layoff/brian-short.mp4 --remove-input",
+    "still": "remotion still PagePreview out/layoff/page-preview.png",
     "typecheck": "tsc --noEmit",
-    "render:short": "remotion render LaidOffShort out/layoff/.raw-laid-off-short.mp4 --crf=14 --x264-preset=slow && python3 scripts/master.py out/layoff/.raw-laid-off-short.mp4 out/layoff/laid-off-short.mp4 --remove-input",
     "covers": "remotion still CoverVertical out/layoff/cover-9x16.png && remotion still ThumbWide out/layoff/thumbnail-16x9.png",
     "brand": "remotion still BrandAvatarFace brand/pencilstories-avatar-face.png && remotion still BrandAvatarIcon brand/pencilstories-avatar-icon.png && remotion still BrandBanner brand/pencilstories-youtube-banner.png && remotion still BrandWordmark brand/pencilstories-wordmark.png --image-format=png && remotion still BrandWatermark brand/pencilstories-youtube-watermark.png --image-format=png"
   },

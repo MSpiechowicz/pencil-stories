@@ -56,7 +56,8 @@ const lerp = (a: Pt, b: Pt, t: number): Pt => {
 
 export const textWidth = (it: DrawItem) => (it.text ?? '').length * (it.size ?? 56) * CHAR_W;
 
-export type Narration = {id: string; mark: string; text: string; speed?: number};
+/** `gap`: seconds of silence before this line (after the previous one); the drawing of its section waits for it too */
+export type Narration = {id: string; mark: string; text: string; speed?: number; gap?: number};
 
 export type Plan = {slots: Slot[]; voice: {id: string; start: number}[]; marks: Record<string, number>; end: number; hookEnd: number};
 
@@ -65,7 +66,8 @@ export type Plan = {slots: Slot[]; voice: {id: string; start: number}[]; marks: 
  * A narration line with mark "hook" plays over the opening hook card; drawing starts after it.
  * `speedScale` > 1 draws faster (used by the short version).
  */
-export const plan = (items: DrawItem[], narration: Narration[], voiceDur: Record<string, number>, speedScale = 1): Plan => {
+/** `drawDelay`: frames after the hook before the pencil starts (lets the camera arrive first) */
+export const plan = (items: DrawItem[], narration: Narration[], voiceDur: Record<string, number>, speedScale = 1, drawDelay = 0): Plan => {
   const slots: Slot[] = [];
   const voice: {id: string; start: number}[] = [];
   const marks: Record<string, number> = {};
@@ -75,7 +77,7 @@ export const plan = (items: DrawItem[], narration: Narration[], voiceDur: Record
     voiceEnd = 6 + (voiceDur[n.id] ?? 60);
   }
   const hookEnd = voiceEnd > 0 ? voiceEnd + 2 : 0;
-  let t = hookEnd;
+  let t = hookEnd + drawDelay;
   let prev: Slot | null = null;
   items.forEach((item, i) => {
     let len: number;
@@ -99,7 +101,8 @@ export const plan = (items: DrawItem[], narration: Narration[], voiceDur: Record
     let start = t + travel + (item.pause ?? 0);
     if (item.mark) {
       // `pause` on a marked item is also a breath after the previous narration line
-      start = Math.max(start, voiceEnd + 6 + (item.pause ?? 0));
+      const gap = Math.max(6, ...narration.filter((n) => n.mark === item.mark).map((n) => Math.round((n.gap ?? 0) * 30)));
+      start = Math.max(start, voiceEnd + gap + (item.pause ?? 0));
       marks[item.mark] = start;
       for (const n of narration.filter((n) => n.mark === item.mark)) {
         const vs = Math.max(start, voiceEnd + 6);

@@ -1,0 +1,101 @@
+[
+  {
+    "id": "00",
+    "mark": "hook",
+    "text": "[serious] After twenty years... [pause] he was replaced by A.I.",
+    "reused_from_long": "00"
+  },
+  {
+    "id": "01",
+    "mark": "start",
+    "text": "[warmly] A desk. A badge. A dream.",
+    "gap": 1.6
+  },
+  {
+    "id": "02",
+    "mark": "email",
+    "text": "[somber] Then one email. [pause] Position eliminated.",
+    "gap": 1.0
+  },
+  {
+    "id": "03",
+    "mark": "crowd",
+    "text": "[heavily] Thousands like him.",
+    "gap": 0.7
+  },
+  {
+    "id": "04",
+    "mark": "bills",
+    "text": "[tense] And the bills didn't stop.",
+    "gap": 0.7
+  },
+  {
+    "id": "05",
+    "mark": "months",
+    "text": "[weary] Months. No answers.",
+    "gap": 0.8
+  },
+  {
+    "id": "06",
+    "mark": "night",
+    "text": "[softly] [sad] One night, he had nothing left.",
+    "gap": 1.2
+  },
+  {
+    "id": "07",
+    "mark": "family",
+    "text": "[quietly] [hopeful] Then he remembered who he was fighting for.",
+    "reused_from_long": "09",
+    "gap": 0
+  },
+  {
+    "id": "08",
+    "mark": "study",
+    "text": "[determined] Every night, he learned.",
+    "gap": 1.1
+  },
+  {
+    "id": "09",
+    "mark": "skills",
+    "text": "[determined] New skills. New certificates. A real portfolio.",
+    "gap": 0.6
+  },
+  {
+    "id": "10",
+    "mark": "no",
+    "text": "[resolute] He heard no, again and again.",
+    "gap": 0.8
+  },
+  {
+    "id": "10b",
+    "mark": "sharper",
+    "text": "[firmly] Every no made him sharper.",
+    "gap": 0.6
+  },
+  {
+    "id": "11",
+    "mark": "yes",
+    "text": "[hopeful] Then another email. [moved] We'd like to offer you the role.",
+    "gap": 0.4
+  },
+  {
+    "id": "12",
+    "mark": "end",
+    "text": "[powerfully] Bad days end.",
+    "reused_from_long": "15",
+    "gap": 0.4
+  },
+  {
+    "id": "13",
+    "mark": "end2",
+    "text": "[with conviction] No storm lasts forever!",
+    "reused_from_long": "15b",
+    "gap": 0.3
+  },
+  {
+    "id": "14",
+    "mark": "outro",
+    "text": "[slowly] [deep, low voice] Keep going.",
+    "reused_from_long": "16"
+  }
+]

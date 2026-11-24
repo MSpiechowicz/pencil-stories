@@ -25,9 +25,10 @@ export const label = (text: string, y: number, color = INK): DrawItem => ({text,
 /* -------- icons for the "world changing" timeline -------- */
 export const crt = (x: number, y: number): DrawItem[] => [
   {d: place(rr(-90, -70, 180, 130, 14), {x, y})},
-  {d: place(rr(-72, -54, 144, 96, 22), {x, y}), w: 4.5},
+  // screen on the left, a control strip on the right with two knobs centred in it
+  {d: place(rr(-76, -54, 126, 96, 22), {x, y}), w: 4.5},
   {d: place('M-34 60 L-46 84 L46 84 L34 60', {x, y})},
-  {d: place(`${circ(76, -40, 5)} ${circ(76, -22, 5)}`, {x, y}), w: 4.5},
+  {d: place(`${circ(70, -19, 7)} ${circ(70, 7, 7)}`, {x, y}), w: 4.5},
 ];
 export const phone = (x: number, y: number): DrawItem[] => [
   {d: place(rr(-44, -84, 88, 168, 14), {x, y})},
@@ -42,7 +43,7 @@ export const chip = (x: number, y: number): DrawItem[] => [
   {d: place(rr(-62, -62, 124, 124, 12), {x, y}), color: RED},
   {d: place(rr(-40, -40, 80, 80, 6), {x, y}), color: RED, w: 4.5},
   {d: place('M-30 -62 L-30 -82 M0 -62 L0 -82 M30 -62 L30 -82 M-30 62 L-30 82 M0 62 L0 82 M30 62 L30 82 M-62 -30 L-82 -30 M-62 0 L-82 0 M-62 30 L-82 30 M62 -30 L82 -30 M62 0 L82 0 M62 30 L82 30', {x, y}), color: RED, w: 5, speed: 120},
-  {text: 'AI', x: x - 22, y: y + 16, size: 46, color: RED},
+  {text: 'AI', x: x - 4.5, y: y + 14.5, size: 46, color: RED, center: true}, // optical centre (the hand font slants right)
 ];
 
 /* -------- the anxiety spiral: part of the one life-line --------

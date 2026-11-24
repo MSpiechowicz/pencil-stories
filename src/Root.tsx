@@ -3,7 +3,7 @@ import {Composition, Still} from 'remotion';
 import {Journey, PagePreview} from './pencil/Journey';
 import {CoverVertical, ThumbWide} from './pencil/Hook';
 import {AvatarFace, AvatarIcon, Banner, Watermark, WordmarkLogo} from './brand/Brand';
-import {FILMS} from './pencil/plan';
+import {FILMS, WIDE} from './pencil/plan';
 import {LONG} from './stories/current';
 
 const even = (n: number) => Math.ceil(n / 2) * 2;
@@ -12,6 +12,12 @@ export const RemotionRoot: React.FC = () => (
   <>
     <Composition id="LaidOff20Years" component={Journey} defaultProps={{variant: 'long' as const}}
       width={1080} height={1920} fps={30} durationInFrames={FILMS.long.TOTAL_FRAMES} />
+    <Composition id="LaidOff20YearsWide" component={Journey} defaultProps={{variant: 'wide' as const, layout: 'wide' as const}}
+      width={WIDE.w} height={WIDE.h} fps={30} durationInFrames={FILMS.wide.TOTAL_FRAMES} />
+    <Composition id="LaidOffShortYouTube" component={Journey} defaultProps={{variant: 'reel' as const, layout: 'tall2k' as const}}
+      width={1440} height={2560} fps={30} durationInFrames={FILMS.reel.TOTAL_FRAMES} />
+    <Composition id="LaidOffShortReels" component={Journey} defaultProps={{variant: 'reel' as const}}
+      width={1080} height={1920} fps={30} durationInFrames={FILMS.reel.TOTAL_FRAMES} />
     <Composition id="LaidOffShort" component={Journey} defaultProps={{variant: 'short' as const}}
       width={1080} height={1920} fps={30} durationInFrames={FILMS.short.TOTAL_FRAMES} />
     <Still id="CoverVertical" component={CoverVertical} defaultProps={{hook: LONG.hook}} width={1080} height={1920} />

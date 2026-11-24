@@ -1,5 +1,6 @@
 """Per-story file locations. Pick the story with STORY=<name> (default: layoff) and the cut with
-VARIANT=long|short (default: long)."""
+VARIANT=long|short|wide (default: long). "wide" is the 16:9 2K full video: the long story with its
+own narration (narration-wide.json, a different narrator), voice-wide/, timing and fitted score."""
 import os
 import pathlib
 
