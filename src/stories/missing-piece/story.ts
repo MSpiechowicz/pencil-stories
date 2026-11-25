@@ -463,7 +463,7 @@ const scribble = (cx: number, cy: number, rx: number, ry: number, n = 420): stri
 };
 
 export const mom = (x: number, y: number, o: Partial<Parameters<typeof stick>[0]> = {}) => stick({x, y, hair: 'long', skirt: true, mood: 'neutral', ink: 1, ...o});
-const girl = (x: number, y: number, o: Partial<Parameters<typeof stick>[0]> = {}) => stick({x, y, child: true, hair: 'pigtails', skirt: true, mood: 'neutral', ink: 1, ...o});
+const girl = (x: number, y: number, o: Partial<Parameters<typeof stick>[0]> = {}) => stick({x, y, child: true, hair: 'pigtails', skirt: true, mood: 'neutral', ink: 1, solidBuns: true, ...o});
 const dad = (x: number, y: number, o: Partial<Parameters<typeof stick>[0]> = {}) => stick({x, y, mood: 'smile', ink: 1, ...o});
 
 /** Mother at her desk, seen from the front behind the laptop. */
@@ -741,7 +741,7 @@ export const STEPS: Step[] = [
     // the daughter grown up: still her pigtails and dress, adult height
     // a little STOP sign on a stick, drawn first so her raised hand grips it
     ...stopSign(STOP_HAND.x, STOP_HAND.y, 22),
-    ...stick({x: 690, y: 465, s: 0.52, hair: 'pigtails', skirt: true, pose: 'stop', mood: 'determined', ink: 1}),
+    ...stick({x: 690, y: 465, s: 0.52, hair: 'pigtails', skirt: true, pose: 'stop', mood: 'determined', ink: 1, solidBuns: true}),
     C('Kids who stand their ground at home', 480, 520, 37, RED, {rot: 2, pivot: {x: 470, y: 350}, mark: 'safe2'}),
     C('learn to say no out there.', 480, 560, 37, RED, {rot: 2, pivot: {x: 470, y: 350}}),
   ]},

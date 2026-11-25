@@ -99,7 +99,10 @@ export const stick = (o: {
   tie?: boolean; tieColor?: string; glasses?: boolean;
   /** line weight factor; by default lines grow with `s` (bigger figure, bolder pen). Pass 1 to
    *  draw with the same pen whatever the size, so figures of different sizes match. */
-  ink?: number; badge?: boolean; skirt?: boolean; child?: boolean; speed?: number;
+  ink?: number;
+  /** pigtail buns filled with paper, so a coloured background (e.g. a sticky note) does not show
+   *  through them; off by default so existing films and brand art are unchanged */
+  solidBuns?: boolean; badge?: boolean; skirt?: boolean; child?: boolean; speed?: number;
   /** a knee-length white medical coat (doctor, dentist), with a red stethoscope */
   coat?: boolean;
   /** only the head (face + hair), e.g. for the channel avatar */
@@ -141,7 +144,7 @@ export const stick = (o: {
   if (o.hair === 'side') out.push(hd(HAIR_SIDE, {w: 5, fill: c}), hd(HAIR_SIDE_PART, {w: 3.5, color: PAPER}));
   if (o.glasses && !pose.side) out.push(hd(GLASSES, {w: 4}));
   if (o.hair === 'pigtails') {
-    out.push(hd(PIGTAILS, {w: 5}), hd(`${circ(-56, -10, 12)} ${circ(56, -10, 12)}`, {w: 5, fill: PAPER}));
+    out.push(hd(PIGTAILS, {w: 5}), hd(`${circ(-56, -10, 12)} ${circ(56, -10, 12)}`, {w: 5, fill: o.solidBuns ? PAPER : undefined}));
     out.push(hd('M-46 -22 L-38 -14 L-46 -6 Z M46 -22 L38 -14 L46 -6 Z', {color: RED, fill: RED, w: 3}));
   }
 
