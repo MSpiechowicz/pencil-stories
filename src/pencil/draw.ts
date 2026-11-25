@@ -17,6 +17,9 @@ export type DrawItem = {
   clip?: string;
   /** text only: x is the centre of the line instead of its start */
   center?: boolean;
+  /** text only: turned by this many degrees around `pivot` (default: x, y), e.g. on a tilted note */
+  rot?: number;
+  pivot?: Pt;
   color?: string;
   /** stroke width (default 5) */
   w?: number;
@@ -67,11 +70,12 @@ export type Plan = {slots: Slot[]; voice: {id: string; start: number}[]; marks: 
  * `speedScale` > 1 draws faster (used by the short version).
  */
 /** `drawDelay`: frames after the hook before the pencil starts (lets the camera arrive first) */
-export const plan = (items: DrawItem[], narration: Narration[], voiceDur: Record<string, number>, speedScale = 1, drawDelay = 0): Plan => {
+/** `voiceFrom`: frame until which a narrator is still speaking when this plan starts (marked items wait for it) */
+export const plan = (items: DrawItem[], narration: Narration[], voiceDur: Record<string, number>, speedScale = 1, drawDelay = 0, voiceFrom = 0): Plan => {
   const slots: Slot[] = [];
   const voice: {id: string; start: number}[] = [];
   const marks: Record<string, number> = {};
-  let voiceEnd = 0;
+  let voiceEnd = voiceFrom;
   for (const n of narration.filter((n) => n.mark === 'hook')) {
     voice.push({id: n.id, start: 6});
     voiceEnd = 6 + (voiceDur[n.id] ?? 60);

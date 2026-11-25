@@ -3,7 +3,7 @@
 // head → face → hair → body → arms → hands → legs → shoes.
 import type {DrawItem, Pt} from './draw';
 import {circ, ellipse, place, rr} from './geo';
-import {INK, PAPER, RED} from './art';
+import {DESK_TOP, INK, PAPER, RED, chairBackrest, desk, laptopBack} from './art';
 
 const P = (x: number, y: number): Pt => ({x, y});
 type Limb = [Pt, Pt, Pt]; // shoulder/hip → elbow/knee → hand/foot
@@ -30,6 +30,12 @@ const LEGS: [[Pt, Pt], [Pt, Pt]] = [[P(-16, -62), P(-24, -8)], [P(16, -62), P(24
 
 export const STICK_POSES = {
   stand: mk(N, H, [P(-36, -172), P(-48, -122)], [P(36, -172), P(48, -122)], ...LEGS),
+  // both fists on the hips (at the sides of the waist, beside a skirt), elbows out, feet apart: defiant
+  akimbo: mk(N, H, [P(-72, -192), P(-54, -152)], [P(72, -192), P(54, -152)], [P(-22, -62), P(-34, -8)], [P(22, -62), P(34, -8)]),
+  // "stop": one hand raised palm-out towards the left, the other fist on the hip, feet apart
+  stop: mk(N, H, [P(-84, -204), P(-134, -238)], [P(72, -192), P(54, -152)], [P(-22, -62), P(-34, -8)], [P(22, -62), P(34, -8)]),
+  // a child reaching up to hold a grown-up's hand (her left hand at adult-hand height when drawn at 1.3x)
+  reachParent: mk(N, H, [P(-50, -196), P(-86, -151)], [P(36, -172), P(48, -122)], ...LEGS),
   handOnHip: mk(N, H, [P(-36, -172), P(-48, -122)], [P(46, -182), P(16, -134)], ...LEGS),
   cheer: mk(N, H, [P(-52, -262), P(-66, -318)], [P(52, -262), P(66, -318)], [P(-22, -62), P(-34, -8)], [P(22, -62), P(34, -8)]),
   despair: mk(N, H, [P(-60, -250), P(-44, -292)], [P(60, -250), P(44, -292)], ...LEGS),
@@ -75,6 +81,11 @@ const faceSide = (m: StickMood): {eyes: string; lines: string} => {
 const HAIR = 'M-8 -45 C-14 -60 -6 -68 2 -72 M2 -46 C4 -64 16 -68 24 -66 M-18 -42 C-28 -54 -26 -62 -20 -68';
 const HAIR_LONG = 'M-44 -12 C-54 -66 54 -66 44 -12 C46 22 54 44 62 62 M-44 -12 C-46 22 -54 44 -62 62 M-40 -24 C-22 -42 22 -42 40 -24';
 const PIGTAILS = 'M-30 -36 C-20 -48 20 -48 30 -36';
+/** slicked, side-parted hair: a cap over the crown with the fringe swept across, and the parting */
+const HAIR_SIDE = 'M-46 -6 C-52 -50 -16 -66 14 -60 C38 -56 50 -38 46 -8 C40 -28 30 -36 14 -38 C-6 -40 -28 -34 -46 -6 Z';
+const HAIR_SIDE_PART = 'M-16 -58 C-20 -50 -22 -44 -24 -36';
+/** round glasses over the eyes */
+const GLASSES = 'M-28 -4 a13 13 0 1 0 26 0 a13 13 0 1 0 -26 0 M2 -4 a13 13 0 1 0 26 0 a13 13 0 1 0 -26 0 M-2 -6 Q0 -9 2 -6 M-28 -8 L-44 -12 M28 -8 L44 -12';
 
 const mitten = (hand: Pt, from: Pt, s: number) => {
   const a = (Math.atan2(hand.y - from.y, hand.x - from.x) * 180) / Math.PI;
@@ -84,8 +95,16 @@ const SHOE = 'M-6 -7 C-6 -16 22 -16 32 -5 C34 2 28 6 -6 6 Z';
 
 export const stick = (o: {
   x: number; y: number; s?: number; pose?: keyof typeof STICK_POSES; flip?: boolean;
-  color?: string; mood?: StickMood; hair?: 'tufts' | 'long' | 'pigtails' | 'none';
-  tie?: boolean; badge?: boolean; skirt?: boolean; child?: boolean; speed?: number;
+  color?: string; mood?: StickMood; hair?: 'tufts' | 'long' | 'pigtails' | 'side' | 'none';
+  tie?: boolean; tieColor?: string; glasses?: boolean;
+  /** line weight factor; by default lines grow with `s` (bigger figure, bolder pen). Pass 1 to
+   *  draw with the same pen whatever the size, so figures of different sizes match. */
+  ink?: number;
+  /** pigtail buns filled with paper, so a coloured background (e.g. a sticky note) does not show
+   *  through them; off by default so existing films and brand art are unchanged */
+  solidBuns?: boolean; badge?: boolean; skirt?: boolean; child?: boolean; speed?: number;
+  /** a knee-length white medical coat (doctor, dentist), with a red stethoscope */
+  coat?: boolean;
   /** only the head (face + hair), e.g. for the channel avatar */
   headOnly?: boolean;
 }): DrawItem[] => {
@@ -95,7 +114,7 @@ export const stick = (o: {
   const k = child ? 0.58 : 1;
   const s = o.s ?? 1;
   const c = o.color ?? INK;
-  const W = 6.5 * Math.max(0.75, s);
+  const W = 6.5 * (o.ink ?? Math.max(0.75, s));
   const base = {x: o.x, y: o.y, s, flip: o.flip};
   const at = (d: string) => place(d, base);
   const sc = (p: Pt) => P(p.x * k, p.y * k);
@@ -105,7 +124,7 @@ export const stick = (o: {
   const head = P(neck.x + (pose.headOffset?.x ?? 0) * k, neck.y - r + (pose.headOffset?.y ?? 0) * k);
   // hair and face lines grow with the figure when it is drawn bigger than normal (avatar),
   // so they keep the same weight relative to the head outline; normal/smaller sizes are unchanged
-  const up = Math.max(1, s);
+  const up = o.ink ?? Math.max(1, s);
   const hd = (d: string, extra: Partial<DrawItem> = {}): DrawItem => ({
     d: at(place(d, {x: head.x, y: head.y, s: r / 46, flip: false})), color: c, speed: o.speed ?? 45, ...extra,
     w: (extra.w ?? 4.5) * up,
@@ -122,8 +141,10 @@ export const stick = (o: {
   if (face.eyes) out.push(hd(face.eyes, {fill: c, w: 3}));
   out.push(hd(face.lines, {w: 5, fill: o.mood === 'grin' && !pose.side ? PAPER : undefined}));
   if ((o.hair ?? 'tufts') === 'tufts') out.push(hd(HAIR, {w: 5}));
+  if (o.hair === 'side') out.push(hd(HAIR_SIDE, {w: 5, fill: c}), hd(HAIR_SIDE_PART, {w: 3.5, color: PAPER}));
+  if (o.glasses && !pose.side) out.push(hd(GLASSES, {w: 4}));
   if (o.hair === 'pigtails') {
-    out.push(hd(PIGTAILS, {w: 5}), hd(`${circ(-56, -10, 12)} ${circ(56, -10, 12)}`, {w: 5}));
+    out.push(hd(PIGTAILS, {w: 5}), hd(`${circ(-56, -10, 12)} ${circ(56, -10, 12)}`, {w: 5, fill: o.solidBuns ? PAPER : undefined}));
     out.push(hd('M-46 -22 L-38 -14 L-46 -6 Z M46 -22 L38 -14 L46 -6 Z', {color: RED, fill: RED, w: 3}));
   }
 
@@ -134,14 +155,37 @@ export const stick = (o: {
   const bodyTop = P(neck.x, neck.y + 2);
   out.push({d: at(`M${bodyTop.x} ${bodyTop.y} Q${(bodyTop.x + hip.x) / 2 + 3} ${(bodyTop.y + hip.y) / 2} ${hip.x} ${hip.y}`), color: c, w: W, speed: o.speed});
   if (o.tie && !pose.side) {
-    out.push({d: at(`M${neck.x - 7} ${neck.y + 4} L${neck.x + 7} ${neck.y + 4} L${neck.x + 4} ${neck.y + 13} L${neck.x - 4} ${neck.y + 13} Z M${neck.x - 4} ${neck.y + 13} L${neck.x - 10} ${neck.y + 62} L${neck.x} ${neck.y + 74} L${neck.x + 10} ${neck.y + 62} L${neck.x + 4} ${neck.y + 13}`), color: RED, w: 4.5, fill: PAPER});
+    out.push({d: at(`M${neck.x - 7} ${neck.y + 4} L${neck.x + 7} ${neck.y + 4} L${neck.x + 4} ${neck.y + 13} L${neck.x - 4} ${neck.y + 13} Z M${neck.x - 4} ${neck.y + 13} L${neck.x - 10} ${neck.y + 62} L${neck.x} ${neck.y + 74} L${neck.x + 10} ${neck.y + 62} L${neck.x + 4} ${neck.y + 13}`), color: o.tieColor ?? RED, w: 4.5, fill: PAPER});
   }
   if (o.badge && !pose.side) out.push({d: at(rr(neck.x + 14, neck.y + 40, 18, 22, 3)), color: RED, w: 4});
+  if (o.coat && !pose.side) {
+    const nx = neck.x;
+    const ny = neck.y + 6;
+    const hy = hip.y + 70 * k; // hem, around the knees
+    out.push(
+      {d: at(`M${nx - 24} ${ny} L${nx - 44} ${ny + 30} L${nx - 52} ${hy} L${nx + 52} ${hy} L${nx + 44} ${ny + 30} L${nx + 24} ${ny} Z`), color: c, w: 5, fill: PAPER},
+      {d: at(`M${nx - 24} ${ny} L${nx} ${ny + 56} L${nx + 24} ${ny} M${nx} ${ny + 56} L${nx} ${hy}`), color: c, w: 4},
+      {d: at(`${rr(nx - 40, ny + 40, 22, 20, 3)} M${nx - 33} ${ny + 40} L${nx - 33} ${ny + 30}`), color: c, w: 3.5},
+      {d: at(`M${nx - 20} ${ny + 4} Q${nx - 26} ${ny + 60} ${nx - 6} ${ny + 70} M${nx + 20} ${ny + 4} Q${nx + 26} ${ny + 60} ${nx + 14} ${ny + 76}`), color: RED, w: 3.5},
+      {d: at(circ(nx + 14, ny + 82, 7)), color: RED, w: 3.5, fill: PAPER},
+    );
+  }
   if (o.skirt) out.push({d: at(`M${neck.x - 12} ${neck.y + 52 * k} L${hip.x - 42 * k} ${hip.y + 26 * k} L${hip.x + 42 * k} ${hip.y + 26 * k} L${neck.x + 12} ${neck.y + 52 * k} Z`), color: c, w: 5, fill: PAPER});
 
   // arms + mitten hands
   for (const arm of [pose.armB, pose.armF]) {
     const a = arm.map(sc);
+    // in a coat the arms come out of the coat's shoulders (its outer corners), not from the neck
+    if (o.coat && !pose.side) {
+      const sg = a[1].x < neck.x ? -1 : 1;
+      // exactly at the coat's shoulder corner (the coat outline turns down there: ny + 30, x 44)
+      a[0] = P(neck.x + sg * 44, neck.y + 36);
+      // arms hanging at the sides swing out so they clear the coat's edge all the way down
+      if (Math.abs(a[2].x - neck.x) < 60) {
+        a[1] = P(neck.x + sg * 66, a[1].y);
+        a[2] = P(neck.x + sg * 76, a[2].y);
+      }
+    }
     out.push(line(a));
     out.push({d: at(mitten(a[2], a[1], 1)), color: c, w: 4.5, fill: PAPER, speed: o.speed ?? 45});
   }
@@ -182,4 +226,36 @@ export const stickHead = (cx: number, cy: number, R: number, o: {color?: string;
   const s = R / r;
   const localY = STICK_POSES.stand.neck.y * k - r; // head centre relative to the feet
   return stick({x: cx, y: cy - localY * s, s, color: o.color, mood: o.mood, hair: o.hair, child: o.child, headOnly: true});
+};
+
+/**
+ * A person seated at a desk, seen from the front: chair back, the chair's stem, base and wheels and
+ * the person's legs and shoes under the desk, the person, the desk, the laptop seen from behind.
+ * The same construction as the brand banner (src/brand/Brand.tsx), here for any scale `s` (the
+ * banner uses s = 0.5); x = the person, ground = the floor line.
+ */
+export const seatedAtDesk = (o: {x: number; ground: number; s?: number; person?: Partial<Parameters<typeof stick>[0]>}): DrawItem[] => {
+  const s = o.s ?? 1;
+  const f = s / 0.62; // leg/chair offsets were designed at scale 0.62
+  const px = o.x;
+  const G = o.ground;
+  const top = G - DESK_TOP * s;
+  const personY = top + 98 * s;
+  const slabBottom = top + 22 * s;
+  const shoe = 'M-6 -7 C-6 -16 22 -16 32 -5 C34 2 28 6 -6 6 Z';
+  // long hair falls to the shoulders: a narrower chair back sits between the strands
+  const back = o.person?.hair === 'long'
+    ? [{d: place(rr(-44, -150, 88, 118, 18), {x: px, y: personY - 92 * s, s}), w: 6.5 * Math.max(0.75, s)},
+      {d: place(rr(-32, -138, 64, 92, 12), {x: px, y: personY - 92 * s, s}), w: 4.5 * Math.max(0.75, s)}]
+    : chairBackrest({x: px, y: personY - 92 * s, s});
+  return [
+    ...back,
+    {d: `M${px} ${slabBottom + 26 * f} L${px} ${G - 20 * f} M${px - 62 * f} ${G - 20 * f} L${px + 62 * f} ${G - 20 * f}`, w: 5},
+    {d: `${circ(px - 62 * f, G - 10 * f, 8 * f)} ${circ(px + 62 * f, G - 10 * f, 8 * f)}`, w: 4, fill: PAPER},
+    {d: `M${px - 12 * f} ${slabBottom + 2} L${px - 24 * f} ${slabBottom + 30 * f} L${px - 32 * f} ${G - 9 * f} M${px + 12 * f} ${slabBottom + 2} L${px + 24 * f} ${slabBottom + 30 * f} L${px + 32 * f} ${G - 9 * f}`, w: 6},
+    {d: `${place(shoe, {x: px - 30 * f, y: G - 6 * f, s: 0.62 * f, flip: true})} ${place(shoe, {x: px + 30 * f, y: G - 6 * f, s: 0.62 * f})}`, fill: PAPER, w: 4},
+    ...stick({x: px, y: personY, s, pose: 'atDesk', ...o.person}),
+    ...desk({x: px + 100 * s, y: G, s}),
+    ...laptopBack({x: px, y: top, s: 0.72 * s}),
+  ];
 };
