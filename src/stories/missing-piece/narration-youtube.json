@@ -1,0 +1,277 @@
+[
+ {
+  "id": "open1",
+  "mark": "open1",
+  "text": "[calm] She does everything."
+ },
+ {
+  "id": "open2",
+  "mark": "open2",
+  "text": "[softly] And somehow... it's never enough."
+ },
+ {
+  "id": "morning",
+  "mark": "morning",
+  "text": "[warmly] Six in the morning."
+ },
+ {
+  "id": "morning2",
+  "mark": "morning2",
+  "text": "Before anyone else is awake, her day has already begun."
+ },
+ {
+  "id": "list",
+  "mark": "list",
+  "text": "[brisk] Lunchboxes. A project due Friday. The dentist. Homework. Dinner. Laundry."
+ },
+ {
+  "id": "ticks",
+  "mark": "ticks",
+  "text": "[proudly] Every box. Every day."
+ },
+ {
+  "id": "work",
+  "mark": "work",
+  "text": "At nine, work."
+ },
+ {
+  "id": "work2",
+  "mark": "work2",
+  "text": "[proudly] She delivered the project. On time. Every piece."
+ },
+ {
+  "id": "complaint",
+  "mark": "complaint",
+  "text": "[disappointed] And still, the first thing she heard was: you missed a part."
+ },
+ {
+  "id": "dentist",
+  "mark": "dentist",
+  "text": "[brisk] At four, the dentist."
+ },
+ {
+  "id": "dentist2",
+  "mark": "dentist2",
+  "text": "[tired] Laptop on her knees, still answering emails."
+ },
+ {
+  "id": "checkup",
+  "mark": "checkup",
+  "text": "[cheerfully] See you in six months."
+ },
+ {
+  "id": "checkup2",
+  "mark": "checkup2",
+  "text": "[sighs] One more date to remember."
+ },
+ {
+  "id": "homework",
+  "mark": "homework",
+  "text": "At six, homework."
+ },
+ {
+  "id": "homework2",
+  "mark": "homework2",
+  "text": "[tired] Fractions. Spelling. One more page."
+ },
+ {
+  "id": "argue",
+  "mark": "argue",
+  "text": "[sighs] And every single night, an argument."
+ },
+ {
+  "id": "cook",
+  "mark": "cook",
+  "text": "At seven, dinner."
+ },
+ {
+  "id": "cook2",
+  "mark": "cook2",
+  "text": "[hopeful] A new recipe tonight."
+ },
+ {
+  "id": "just-ok",
+  "mark": "just-ok",
+  "text": "[flatly] It's... okay."
+ },
+ {
+  "id": "just-ok2",
+  "mark": "just-ok2",
+  "text": "[sad] And all she heard was: everything I cook tastes bad."
+ },
+ {
+  "id": "laundry",
+  "mark": "laundry",
+  "text": "Saturday, laundry."
+ },
+ {
+  "id": "laundry2",
+  "mark": "laundry2",
+  "text": "[firmly] Her rule: towels in thirds. Always."
+ },
+ {
+  "id": "husband",
+  "mark": "husband",
+  "text": "[warmly] He folded them his way."
+ },
+ {
+  "id": "husband2",
+  "mark": "husband2",
+  "text": "[sharply] Not like that, she said."
+ },
+ {
+  "id": "husband3",
+  "mark": "husband3",
+  "text": "[sad] Even help felt wrong."
+ },
+ {
+  "id": "pile1",
+  "mark": "pile1",
+  "text": "[stressed] Where is section four?"
+ },
+ {
+  "id": "pile1b",
+  "mark": "pile1b",
+  "text": "[urgently] Mom!"
+ },
+ {
+  "id": "pile1c",
+  "mark": "pile1c",
+  "text": "[quickly] Did you buy milk?"
+ },
+ {
+  "id": "pile1d",
+  "mark": "pile1d",
+  "text": "[quickly] Sign the school form!"
+ },
+ {
+  "id": "pile1e",
+  "mark": "pile1e",
+  "text": "[tense] The deadline moved. To tomorrow."
+ },
+ {
+  "id": "pile1f",
+  "mark": "pile1f",
+  "text": "[quickly] Parent meeting at six."
+ },
+ {
+  "id": "pile1g",
+  "mark": "pile1g",
+  "text": "[exhausted] Laundry. Again."
+ },
+ {
+  "id": "pile1h",
+  "mark": "pile1h",
+  "text": "[accusingly] Why didn't you...?"
+ },
+ {
+  "id": "pile2",
+  "mark": "pile2",
+  "text": "[overwhelmed] You forgot."
+ },
+ {
+  "id": "pile2b",
+  "mark": "pile2b",
+  "text": "You never."
+ },
+ {
+  "id": "pile2c",
+  "mark": "pile2c",
+  "text": "Can you just..."
+ },
+ {
+  "id": "pile2d",
+  "mark": "pile2d",
+  "text": "[exhausted] One more thing."
+ },
+ {
+  "id": "floor",
+  "mark": "floor",
+  "text": "[quietly] One night, on the laundry room floor,"
+ },
+ {
+  "id": "wonder",
+  "mark": "wonder",
+  "text": "[sad] she wondered if she was failing at everything."
+ },
+ {
+  "id": "turnback",
+  "mark": "turnback",
+  "text": "[gently] But let's turn the pages back. [pause] And read them again."
+ },
+ {
+  "id": "back-to-start",
+  "mark": "back-to-start",
+  "text": "[warmly] She does everything. [pause] And she is enough."
+ },
+ {
+  "id": "not-hers",
+  "mark": "not-hers",
+  "text": "[reassuring] The missing part was never hers."
+ },
+ {
+  "id": "not-hers2",
+  "mark": "not-hers2",
+  "text": "Her work was done. Done right."
+ },
+ {
+  "id": "shared",
+  "mark": "shared",
+  "text": "[gently] She doesn't have to remember everything alone."
+ },
+ {
+  "id": "shared2",
+  "mark": "shared2",
+  "text": "[warmly] Next check-up: Dad's turn."
+ },
+ {
+  "id": "safe",
+  "mark": "safe",
+  "text": "[tenderly] Her daughter argues with her because she feels safe with her."
+ },
+ {
+  "id": "safe2",
+  "mark": "safe2",
+  "text": "Kids who stand their ground at home learn to say no out there."
+ },
+ {
+  "id": "recipe",
+  "mark": "recipe",
+  "text": "[warmly] Nine dinners before it: loved."
+ },
+ {
+  "id": "recipe2",
+  "mark": "recipe2",
+  "text": "One recipe. Not her."
+ },
+ {
+  "id": "his-way",
+  "mark": "his-way",
+  "text": "[warmly] He did it his way. Not wrong. Just his."
+ },
+ {
+  "id": "his-way2",
+  "mark": "his-way2",
+  "text": "[tenderly] He wanted to help, not to copy her."
+ },
+ {
+  "id": "never",
+  "mark": "never",
+  "text": "[moved] She was never the missing piece."
+ },
+ {
+  "id": "home",
+  "mark": "home",
+  "text": "[warmly] She was the one holding it all together."
+ },
+ {
+  "id": "better",
+  "mark": "better",
+  "text": "[with conviction] You're doing better than you think."
+ },
+ {
+  "id": "outro",
+  "mark": "outro",
+  "text": "[slowly] [deep, low voice] Keep going."
+ }
+]

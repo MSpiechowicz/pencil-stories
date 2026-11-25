@@ -13,7 +13,7 @@ const W = 1080;
 const H = 1920;
 const DESK = '#3b3430';
 
-const PencilTip: React.FC<{x: number; y: number}> = ({x, y}) => (
+export const PencilTip: React.FC<{x: number; y: number}> = ({x, y}) => (
   <g transform={`translate(${x} ${y})`}>
     <path d="M0 0 L10 -26 L26 -20 Z" fill="#e8c9a0" />
     <path d="M0 0 L4 -10 L10 -8 Z" fill={INK} />
@@ -23,7 +23,8 @@ const PencilTip: React.FC<{x: number; y: number}> = ({x, y}) => (
   </g>
 );
 
-export const Strokes: React.FC<{frame: number; slots: Slot[]}> = ({frame, slots}) => (
+/** `idPrefix`: keeps clip ids unique when the same strokes are drawn twice in one SVG (book pages) */
+export const Strokes: React.FC<{frame: number; slots: Slot[]; idPrefix?: string}> = ({frame, slots, idPrefix = ''}) => (
   <>
     {slots.map((s) => {
       if (frame < s.start) return null;
@@ -32,10 +33,11 @@ export const Strokes: React.FC<{frame: number; slots: Slot[]}> = ({frame, slots}
       const color = it.color ?? INK;
       if (it.text !== undefined) {
         const size = it.size ?? 56;
-        const cid = `t${s.i}`;
+        const cid = `${idPrefix}t${s.i}`;
         const w = textWidth(it) * 1.25 + 40;
+        const turn = it.rot ? `rotate(${it.rot} ${it.pivot?.x ?? it.x} ${it.pivot?.y ?? it.y})` : undefined;
         return (
-          <g key={s.i}>
+          <g key={s.i} transform={turn}>
             <clipPath id={cid}>
               <rect x={s.x0 - 20 - (it.center ? textWidth(it) * 0.125 : 0)} y={it.y! - size * 1.25} width={w * p} height={size * 1.75} />
             </clipPath>
@@ -66,8 +68,8 @@ export const Strokes: React.FC<{frame: number; slots: Slot[]}> = ({frame, slots}
       return (
         it.clip ? (
           <g key={s.i}>
-            <clipPath id={`clip${s.i}`}><path d={it.clip} /></clipPath>
-            <path {...common} fill="none" stroke={color} strokeWidth={it.w ?? 6.5} clipPath={`url(#clip${s.i})`} />
+            <clipPath id={`${idPrefix}clip${s.i}`}><path d={it.clip} /></clipPath>
+            <path {...common} fill="none" stroke={color} strokeWidth={it.w ?? 6.5} clipPath={`url(#${idPrefix}clip${s.i})`} />
           </g>
         ) :
         <path key={s.i} {...common} fill={done && it.fill ? it.fill : 'none'} fillOpacity={it.fillOpacity ?? 1}

@@ -15,7 +15,15 @@
     "covers": "remotion still CoverVertical out/layoff/cover-9x16.png && remotion still ThumbWide out/layoff/thumbnail-16x9.png",
     "brand": "remotion still BrandAvatarFace brand/pencilstories-avatar-face.png && remotion still BrandAvatarIcon brand/pencilstories-avatar-icon.png && remotion still BrandBanner brand/pencilstories-youtube-banner.png && remotion still BrandWordmark brand/pencilstories-wordmark.png --image-format=png && remotion still BrandWatermark brand/pencilstories-youtube-watermark.png --image-format=png",
     "publish": "tools/publish/.venv/bin/python tools/publish/publish.py",
-    "publish:setup": "python3 -m venv tools/publish/.venv && tools/publish/.venv/bin/python -m pip install -q -r tools/publish/requirements.txt"
+    "publish:setup": "python3 -m venv tools/publish/.venv && tools/publish/.venv/bin/python -m pip install -q -r tools/publish/requirements.txt",
+    "preview:missing-piece": "remotion render MissingPieceWide out/missing-piece/preview-silent.mp4 --muted --crf=16",
+    "narrate:kokoro": "STORY=missing-piece VARIANT=kokoro ~/.local/share/hyperframes/kokoro-venv/bin/python tools/tts/narrate.py af_heart 0.95",
+    "preview:kokoro": "remotion render MissingPieceKokoro out/missing-piece/preview-kokoro.mp4 --crf=16",
+    "preview:reels": "ffmpeg -v error -y -i out/missing-piece/preview-shorts-kokoro.mp4 -vf scale=1080:1920:flags=lanczos -c:v libx264 -crf 18 -preset slow -c:a copy out/missing-piece/preview-reels-kokoro.mp4",
+    "preview:shorts": "remotion render MissingPieceShorts out/missing-piece/preview-shorts-kokoro.mp4 --crf=16",
+    "preview:vertical": "npm run preview:shorts && npm run preview:reels",
+    "render:missing-piece:shorts": "remotion render MissingPieceShortsLaura out/missing-piece/.raw-shorts.mp4 --crf=14 --x264-preset=slow && python3 scripts/master.py out/missing-piece/.raw-shorts.mp4 out/missing-piece/missing-piece-youtube-shorts.mp4 --remove-input && ffmpeg -v error -y -i out/missing-piece/missing-piece-youtube-shorts.mp4 -vf scale=1080:1920:flags=lanczos -c:v libx264 -crf 16 -preset slow -c:a copy out/missing-piece/missing-piece-instagram-reels.mp4",
+    "render:missing-piece:youtube": "remotion render MissingPieceYouTube out/missing-piece/.raw-youtube.mp4 --crf=14 --x264-preset=slow && python3 scripts/master.py out/missing-piece/.raw-youtube.mp4 out/missing-piece/missing-piece-youtube.mp4 --remove-input"
   },
   "dependencies": {
     "@remotion/cli": "^4.0.546",

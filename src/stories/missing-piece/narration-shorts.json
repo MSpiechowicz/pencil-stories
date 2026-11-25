@@ -1,0 +1,152 @@
+[
+ {
+  "id": "open1",
+  "mark": "open1",
+  "text": "[calm] She does everything."
+ },
+ {
+  "id": "open2",
+  "mark": "open2",
+  "text": "[softly] And somehow... it's never enough."
+ },
+ {
+  "id": "morning",
+  "mark": "morning",
+  "text": "[warmly] Six in the morning."
+ },
+ {
+  "id": "morning2",
+  "mark": "morning2",
+  "text": "Before anyone else is awake, her day has already begun."
+ },
+ {
+  "id": "list",
+  "mark": "list",
+  "text": "[brisk] Lunchboxes. A project due Friday. The dentist. Homework. Dinner. Laundry."
+ },
+ {
+  "id": "ticks",
+  "mark": "ticks",
+  "text": "[proudly] Every box. Every day."
+ },
+ {
+  "id": "work",
+  "mark": "work",
+  "text": "At nine, work."
+ },
+ {
+  "id": "work2",
+  "mark": "work2",
+  "text": "[proudly] She delivered the project. On time. Every piece."
+ },
+ {
+  "id": "complaint",
+  "mark": "complaint",
+  "text": "[disappointed] And still, the first thing she heard was: you missed a part."
+ },
+ {
+  "id": "homework",
+  "mark": "homework",
+  "text": "At six, homework."
+ },
+ {
+  "id": "homework2",
+  "mark": "homework2",
+  "text": "[tired] Fractions. Spelling. One more page."
+ },
+ {
+  "id": "argue",
+  "mark": "argue",
+  "text": "[sighs] And every single night, an argument."
+ },
+ {
+  "id": "cook",
+  "mark": "cook",
+  "text": "At seven, dinner."
+ },
+ {
+  "id": "cook2",
+  "mark": "cook2",
+  "text": "[hopeful] A new recipe tonight."
+ },
+ {
+  "id": "just-ok",
+  "mark": "just-ok",
+  "text": "[flatly] It's... okay."
+ },
+ {
+  "id": "just-ok2",
+  "mark": "just-ok2",
+  "text": "[sad] And all she heard was: everything I cook tastes bad."
+ },
+ {
+  "id": "floor",
+  "mark": "floor",
+  "text": "[quietly] One night, on the laundry room floor,"
+ },
+ {
+  "id": "wonder",
+  "mark": "wonder",
+  "text": "[sad] she wondered if she was failing at everything."
+ },
+ {
+  "id": "turnback",
+  "mark": "turnback",
+  "text": "[gently] But let's turn the pages back. [pause] And read them again."
+ },
+ {
+  "id": "back-to-start",
+  "mark": "back-to-start",
+  "text": "[warmly] She does everything. [pause] And she is enough."
+ },
+ {
+  "id": "not-hers",
+  "mark": "not-hers",
+  "text": "[reassuring] The missing part was never hers."
+ },
+ {
+  "id": "not-hers2",
+  "mark": "not-hers2",
+  "text": "Her work was done. Done right."
+ },
+ {
+  "id": "safe",
+  "mark": "safe",
+  "text": "[tenderly] Her daughter argues with her because she feels safe with her."
+ },
+ {
+  "id": "safe2",
+  "mark": "safe2",
+  "text": "Kids who stand their ground at home learn to say no out there."
+ },
+ {
+  "id": "recipe",
+  "mark": "recipe",
+  "text": "[warmly] Nine dinners before it: loved."
+ },
+ {
+  "id": "recipe2",
+  "mark": "recipe2",
+  "text": "One recipe. Not her."
+ },
+ {
+  "id": "never",
+  "mark": "never",
+  "text": "[moved] She was never the missing piece."
+ },
+ {
+  "id": "home",
+  "mark": "home",
+  "text": "[warmly] She was the one holding it all together."
+ },
+ {
+  "id": "better",
+  "mark": "better",
+  "text": "[with conviction] You're doing better than you think."
+ },
+ {
+  "id": "outro",
+  "mark": "outro",
+  "text": "[slowly] [deep, low voice] Keep going."
+ }
+]
