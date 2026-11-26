@@ -288,6 +288,8 @@ def main():
             how = f"scheduled for {a.publish_at}" if a.publish_at else f"privacy: {a.privacy}"
         print(f"[{t}] {f.relative_to(ROOT)} ({f.stat().st_size / 1e6:.1f} MB) -> {who}, {how}")
         print("    " + words.replace("\n", "\n    ") + "\n")
+        if t == "shorts":
+            print("    NOTE: the Short's thumbnail must be picked by hand afterwards (the API cannot set it)\n")
         plan.append(t)
     if not a.go or not plan:
         return
@@ -305,6 +307,11 @@ def main():
         log[t] = res
         save_log(a.story, log)
         print(f"[{t}] done: {res['url']}\n")
+        if t == "shorts":
+            # the API cannot give a Short a custom thumbnail (thumbnails.set is ignored for Shorts);
+            # it has to be picked by hand in the YouTube app or Studio
+            print(f"[shorts] SET THE COVER BY HAND: YouTube app or Studio -> {res['url']} -> Edit -> Thumbnail "
+                  f"(pick a frame; the API cannot set a Short's thumbnail)\n")
 
 
 if __name__ == "__main__":
