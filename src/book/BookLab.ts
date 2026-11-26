@@ -1,5 +1,5 @@
 // A small test book for the page turns: an ordinary turn, a riffle forward, a block back, a block
-// forward and a riffle back, with a drawing on every page so the first and last sheets of each
+// forward and a riffle back, a right and a left page torn out, with a drawing on every page so the first and last sheets of each
 // turn can be checked against the pages under them. Render it as the "BookLab" composition.
 import type {DrawItem} from '../pencil/draw';
 import {INK, RED} from '../pencil/art';
@@ -23,6 +23,12 @@ export const BOOK_LAB_STEPS: Step[] = [
   at('bulk-back', 1, {bulk: {frames: 54}, left: [], right: []}),
   at('bulk-forward', 6, {bulk: {frames: 54}, left: [], right: []}),
   at('riffle-back', 2, {flipThrough: {sheets: 12, perSheet: 3, frames: 60}}),
+  // tear out the right page, then the left one: the drawings go onto the pages revealed below
+  at('tear-right', 2, {tear: {side: 'right'}, left: [], right: [T('A new page.', 160, 260, 96, RED)]}),
+  at('tear-left', 2, {tear: {side: 'left'}, left: [T('Torn too.', 160, 260, 96)], right: []}),
+  // the stubs travel with their pages: riffle away and swing back
+  at('away', 5, {flipThrough: {sheets: 10, perSheet: 2, frames: 55}, left: [], right: []}),
+  at('back-to-stubs', 2, {bulk: {frames: 54}, left: [], right: []}),
 ];
 
 const S = schedule(BOOK_LAB_STEPS);

@@ -26,6 +26,10 @@ export type Step = {
   /** reach the spread by swinging one thick block of `pages` pages over the spine in `frames`
    *  (default: as many pages as the stacks need to get back to how they were at that spread) */
   bulk?: {pages?: number; frames?: number};
+  /** tear out the page on `side` of this step's spread (after arriving, before drawing): the rip
+   *  runs down by the spine, the page bends with the pull and slides off the desk, a ragged stub
+   *  stays in the gutter. The step's drawings then go onto the page revealed underneath. */
+  tear?: {side: 'left' | 'right'; frames?: number};
   /** draw the right page before the left (so narration anchored on both follows the story order) */
   rightFirst?: boolean;
   /** >1 draws faster */
@@ -48,6 +52,9 @@ export const FLIP = 34;
 /** defaults of the two fast turns */
 export const RIFFLE = {sheets: 18, perSheet: 2, frames: 75};
 export const BULK_FRAMES = 54;
+export const TEAR_FRAMES = 96;
+/** a page torn out of `spread` on `side` between frames `start` and `end` */
+export type Tear = {spread: number; side: Side; start: number; end: number};
 
 /**
  * Narration (optional): each line has a `mark`; the drawn item carrying the same mark starts the
@@ -63,6 +70,7 @@ export const schedule = (steps: Step[], narration: Narration[] = [], voice: Reco
   const pages: Record<number, {left: Slot[]; right: Slot[]}> = {};
   const page = (s: number) => (pages[s] ??= {left: [], right: []});
   const turns: Turn[] = [];
+  const tears: Tear[] = [];
   const arrivals: {spread: number; at: number; sheets: number}[] = [];
   const beats: Record<string, {start: number; drawEnd: number; end: number}> = {};
   let t = 0;
@@ -114,6 +122,11 @@ export const schedule = (steps: Step[], narration: Narration[] = [], voice: Reco
       arrive(at + dir);
       if (at !== st.spread) t += st.flipGap ?? 2;
     }
+    if (st.tear) {
+      const frames = st.tear.frames ?? TEAR_FRAMES;
+      tears.push({spread: st.spread, side: st.tear.side, start: t, end: t + frames});
+      t += frames + 8;
+    }
     t += st.pause ?? (turns.length && turns[turns.length - 1].end === t ? 10 : 0);
     let spoke = false;
     for (const side of st.rightFirst ? (['right', 'left'] as const) : (['left', 'right'] as const)) {
@@ -135,10 +148,18 @@ export const schedule = (steps: Step[], narration: Narration[] = [], voice: Reco
     t = Math.ceil(Math.max(t + (st.hold ?? 45), spoke ? busy + BREATH : 0)); // whole frames
     beats[st.id] = {start: beatStart, drawEnd, end: t};
   }
-  return {pages, turns, arrivals, beats, lines, end: t, page, maxSheets};
+  return {pages, turns, arrivals, beats, lines, end: t, page, maxSheets, tears};
 };
 
 export type Schedule = ReturnType<typeof schedule>;
+
+/** The latest tear of a page that has begun by frame f (or null). Drawings made before it were on
+ *  the torn sheet; the page showing afterwards only has what was drawn since. */
+export const tearOf = (S: Schedule, spread: number, side: Side, f: number): Tear | null => {
+  let best: Tear | null = null;
+  for (const tr of S.tears) if (tr.spread === spread && tr.side === side && tr.start <= f && (!best || tr.start > best.start)) best = tr;
+  return best;
+};
 
 /** The spread lying open at frame f (between turns), and the turn in progress, if any. */
 export const stateAt = (S: Schedule, f: number): {spread: number; turn: Turn | null; p: number} => {

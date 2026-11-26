@@ -13,9 +13,10 @@ import {pencilAt, type Slot} from '../pencil/draw';
 import {INK, PAPER} from '../pencil/art';
 import {HAND_FONT} from '../pencil/fonts';
 import {PencilTip, Strokes} from '../pencil/Journey';
-import {stateAt, type Schedule, type Side, type Turn} from './timeline';
+import {stateAt, tearOf, type Schedule, type Side, type Tear, type Turn} from './timeline';
 import {fanSheet, polyD, riffleProgress, stackProgress, swingEase, turnEase, turnGeometry} from './turn';
 import {BAND_SVG, BW, BY, DESK_DEFS, RIBBON_SVG, VIGNETTE, boardSVG, bookShadowSVG, deskSVG} from './desk';
+import {awayTransform, lean, piecePath, stubPath, tearLine, tearState, tearX} from './tear';
 
 export const PW = 1000; // page width (book units)
 export const PH = 1300; // page height
@@ -57,15 +58,50 @@ const Paper: React.FC<{side: Side}> = ({side}) => {
 
 const pageX = (side: Side) => (side === 'left' ? -PW : 0);
 
-/** One page with everything drawn on it up to `frame`, placed at its slot in the open book. */
-const Page: React.FC<{side: Side; slots: Slot[]; frame: number; id: string; pencil?: boolean}> = ({side, slots, frame, id, pencil}) => {
+/** A torn page's edge: a faint shadow where it lies on the page below, then rough fibres only a
+ *  little lighter than the paper. sx: +1 right page, -1 left; down to yMax (as far as the rip ran). */
+const TornEdge: React.FC<{sx: number; dx?: number; yMax?: number}> = ({sx, dx = 0, yMax = PH}) => {
+  const line = tearLine(sx, dx, yMax);
+  if (!line) return null;
+  return (
+    <>
+      <path d={line} fill="none" stroke="#3a2a1a" strokeWidth={1.6} opacity={0.14} transform={`translate(${sx * 1.6} 1.2)`} />
+      <path d={line} fill="none" stroke="#f4efe4" strokeWidth={2.2} strokeLinejoin="round" opacity={0.55} />
+      <path d={tearLine(sx, dx, yMax, true)} fill="none" stroke="#ddd4c2" strokeWidth={0.9} opacity={0.6} />
+    </>
+  );
+};
+
+/** The stub of a page torn out: a ragged strip of paper by the spine, in book coordinates. */
+const Stub: React.FC<{side: Side; id: string; under?: number; frame?: number; slots?: Slot[]; edge?: number}> = ({side, id, under = 0, frame = 0, slots = [], edge = PH}) => {
+  const sx = side === 'left' ? -1 : 1;
+  return (
+    <>
+      <clipPath id={`stub-${id}`}><path d={stubPath(sx, under)} /></clipPath>
+      <g clipPath={`url(#stub-${id})`}>
+        <g transform={`translate(${pageX(side)} 0)`}>
+          <Paper side={side} />
+          <Strokes frame={frame} slots={slots} idPrefix={`stub${id}`} />
+        </g>
+      </g>
+      <TornEdge sx={sx} yMax={edge} />
+    </>
+  );
+};
+
+/** One page with everything drawn on it up to `frame`, placed at its slot in the open book.
+ *  `stub`: a page torn out before it left its stub lying on this page. */
+const Page: React.FC<{side: Side; slots: Slot[]; frame: number; id: string; pencil?: boolean; stub?: boolean}> = ({side, slots, frame, id, pencil, stub}) => {
   const pt = pencil && slots.length ? pencilAt(slots, frame, {x: PW + 420 - pageX(side), y: PH + 260}) : null;
   return (
-    <g transform={`translate(${pageX(side)} 0)`}>
-      <Paper side={side} />
-      <Strokes frame={frame} slots={slots} idPrefix={id} />
-      {pt && <PencilTip x={pt.x} y={pt.y} />}
-    </g>
+    <>
+      <g transform={`translate(${pageX(side)} 0)`}>
+        <Paper side={side} />
+        <Strokes frame={frame} slots={slots} idPrefix={id} />
+      </g>
+      {stub && <Stub side={side} id={id} />}
+      {pt && <g transform={`translate(${pageX(side)} 0)`}><PencilTip x={pt.x} y={pt.y} /></g>}
+    </>
   );
 };
 
@@ -132,7 +168,7 @@ const sheetsAt = (S: Schedule, f: number) => {
 /* ---------------- riffle and bulk ---------------- */
 
 /** what lies on a sheet's face: the drawings of one page, or nothing (a blank sheet) */
-type Face = {slots: Slot[]; id: string} | null;
+type Face = {slots: Slot[]; id: string; stub?: boolean} | null;
 
 /**
  * One sheet swinging about the spine at angle th. Its face is drawn with the same Page as the page
@@ -163,7 +199,7 @@ const SwingSheet: React.FC<{th: number; id: string; frame: number; right: Face; 
       </defs>
       <g clipPath={`url(#sw-${id})`}>
         <g transform={g.content}>
-          <Page side={g.side} slots={face?.slots ?? []} frame={frame} id={`${id}${face?.id ?? ''}`} />
+          <Page side={g.side} slots={face?.slots ?? []} frame={frame} id={`${id}${face?.id ?? ''}`} stub={face?.stub} />
         </g>
         <rect x={-330} y={-200} width={660} height={PH + 400} fill="url(#dk-spineU)" opacity={flat} />
         <path d={g.d} fill={`url(#swf-${id})`} />
@@ -188,7 +224,7 @@ const BLOCK_LAYERS = 9;
  * they leave, the next blank sheet until the last has lifted, then the new spread's page; on the
  * side they land on, the old page until the first lands, then blank backs, then the new page.
  */
-const SwingTurn: React.FC<{tr: Turn; p: number; frame: number; get: (s: number, side: Side) => Slot[]; total: number}> = ({tr, p, frame, get, total}) => {
+const SwingTurn: React.FC<{tr: Turn; p: number; frame: number; get: (s: number, side: Side) => Slot[]; stub: (s: number, side: Side) => boolean; total: number}> = ({tr, p, frame, get, stub, total}) => {
   const dep: Side = tr.dir > 0 ? 'right' : 'left';
   const arr: Side = tr.dir > 0 ? 'left' : 'right';
   const n = tr.kind === 'riffle' ? tr.sheets : 1;
@@ -197,8 +233,8 @@ const SwingTurn: React.FC<{tr: Turn; p: number; frame: number; get: (s: number, 
   const landed = us.filter((u) => u >= 1).length;
   const depBase = lifted >= n ? get(tr.to, dep) : lifted === 0 ? get(tr.from, dep) : [];
   const arrBase = landed === 0 ? get(tr.from, arr) : landed >= n ? get(tr.to, arr) : [];
-  const fromFace: Face = {slots: get(tr.from, dep), id: `f${tr.from}`};
-  const toFace: Face = {slots: get(tr.to, arr), id: `t${tr.to}`};
+  const fromFace: Face = {slots: get(tr.from, dep), id: `f${tr.from}`, stub: stub(tr.from, dep)};
+  const toFace: Face = {slots: get(tr.to, arr), id: `t${tr.to}`, stub: stub(tr.to, arr)};
   type Item = {th: number; id: string; right: Face; left: Face; inner?: boolean};
   const items: Item[] = [];
   us.forEach((u, i) => {
@@ -230,10 +266,119 @@ const SwingTurn: React.FC<{tr: Turn; p: number; frame: number; get: (s: number, 
   }
   return (
     <>
-      <Page side={dep} slots={depBase} frame={frame} id={`d${tr.from}`} />
-      <Page side={arr} slots={arrBase} frame={frame} id={`a${tr.from}`} />
+      <Page side={dep} slots={depBase} frame={frame} id={`d${tr.from}`} stub={lifted >= n ? stub(tr.to, dep) : lifted === 0 && stub(tr.from, dep)} />
+      <Page side={arr} slots={arrBase} frame={frame} id={`a${tr.from}`} stub={landed >= n ? stub(tr.to, arr) : landed === 0 && stub(tr.from, arr)} />
       <SpineShade line={false} />
       {sheets}
+    </>
+  );
+};
+
+/* ---------------- tearing a page out ---------------- */
+
+/** what was drawn on the torn sheet: since the page's previous tear (if any), before this one */
+const tornSlots = (S: Schedule, tear: Tear) => {
+  const prev = tearOf(S, tear.spread, tear.side, tear.start - 1);
+  return (S.pages[tear.spread]?.[tear.side] ?? []).filter((x) => x.start < tear.start && (!prev || x.start >= prev.start));
+};
+
+/** Under the gutter shade: the facing page, the page revealed under the torn one, and the stub. */
+const TearUnder: React.FC<{tear: Tear; frame: number; S: Schedule; get: (s: number, side: Side) => Slot[]; stub: (s: number, side: Side) => boolean}> = ({tear, frame, S, get, stub}) => {
+  const other: Side = tear.side === 'left' ? 'right' : 'left';
+  const {r, away} = tearState((frame - tear.start) / (tear.end - tear.start));
+  return (
+    <>
+      <Page side={other} slots={get(tear.spread, other)} frame={frame} id={`tu${tear.spread}${other[0]}`} stub={stub(tear.spread, other)} />
+      <Page side={tear.side} slots={get(tear.spread, tear.side)} frame={frame} id={`tr${tear.spread}${tear.side[0]}`} />
+      {/* the stub reaches a little under the piece, so the page looks whole until it rips */}
+      <Stub side={tear.side} id={`tearing${tear.start}`} under={6} frame={frame} slots={tornSlots(S, tear)} edge={away > 0 ? PH : r * PH} />
+    </>
+  );
+};
+
+/**
+ * Over the gutter shade: the torn piece. While the rip runs down, the loose top swings about the
+ * rip front and the still-attached part leans with the pull, strip by strip about its own point on
+ * the tear line (so it stays attached), strongly just below the front, not at all at the bottom.
+ * Then the free page slides off the book. One shadow throughout: the piece's own outline, cut a
+ * blur's width below the front (never at it), growing softer, darker and further as it lifts.
+ */
+const TearPiece: React.FC<{tear: Tear; frame: number; S: Schedule}> = ({tear, frame, S}) => {
+  const sx = tear.side === 'left' ? -1 : 1;
+  const {r, away, swing, k} = tearState((frame - tear.start) / (tear.end - tear.start));
+  const slots = tornSlots(S, tear);
+  const py = r * PH;
+  const px = sx * tearX(py);
+  const outline = piecePath(sx);
+  const id = `tp${tear.start}`;
+  const body = (key: string) => (
+    <>
+      <clipPath id={`${id}-pc-${key}`}><path d={outline} /></clipPath>
+      <g clipPath={`url(#${id}-pc-${key})`}>
+        <Page side={tear.side} slots={slots} frame={frame} id={`${id}${key}`} />
+        <rect x={-330} y={0} width={660} height={PH} fill="url(#dk-spineU)" opacity={1 - k} />
+      </g>
+      <TornEdge sx={sx} dx={1.5} yMax={away > 0 ? PH : py} />
+    </>
+  );
+  const shadow = (tf: string, strength: number) => (
+    <path d={outline} fill="#1a1008" opacity={(0.25 + 0.15 * k) * strength} filter={`url(#${id}-blur)`}
+      transform={`${tf} translate(${(sx * (4 + 26 * k)).toFixed(3)} ${(6 + 34 * k).toFixed(3)})`} />
+  );
+  let parts: React.ReactNode;
+  if (away <= 0) {
+    const rot = `rotate(${(sx * swing).toFixed(4)} ${px.toFixed(2)} ${py.toFixed(2)})`;
+    const strips: React.ReactNode[] = [];
+    if (py < PH) {
+      const N = 48;
+      const h = PH / N;
+      // bottom strips first: each strip above leans a little more and lies over the one below
+      for (let i = N - 1; i >= 0; i--) {
+        const y0 = i * h;
+        const y1 = y0 + h;
+        if (y1 <= py) continue;
+        const ya = Math.max(y0, py);
+        const yc = (ya + y1) / 2;
+        strips.push(
+          <g key={i} transform={`rotate(${(sx * lean(yc, py, swing)).toFixed(4)} ${(sx * tearX(yc)).toFixed(2)} ${yc.toFixed(2)})`}>
+            <clipPath id={`${id}-rg-s${i}`}><rect x={-PW - 10} y={ya} width={2 * PW + 20} height={y1 - ya + 1.2} /></clipPath>
+            <g clipPath={`url(#${id}-rg-s${i})`}>{body(`b${i}`)}</g>
+          </g>,
+        );
+      }
+    }
+    parts = (
+      <>
+        {r > 0 && (
+          <g transform={rot}>
+            <clipPath id={`${id}-rg-sh`}><rect x={-PW - 200} y={-200} width={2 * PW + 400} height={py + 400} /></clipPath>
+            <g clipPath={`url(#${id}-rg-sh)`}>{shadow('', r)}</g>
+          </g>
+        )}
+        {strips}
+        {r > 0 && (
+          <g transform={rot}>
+            <clipPath id={`${id}-rg-up`}><rect x={-PW - 60} y={-200} width={2 * PW + 120} height={py + 200} /></clipPath>
+            <g clipPath={`url(#${id}-rg-up)`}>{body('up')}</g>
+          </g>
+        )}
+      </>
+    );
+  } else {
+    const tf = awayTransform(sx, swing, away);
+    parts = (
+      <>
+        {shadow(tf, 1)}
+        <g transform={tf}>{body('away')}</g>
+      </>
+    );
+  }
+  return (
+    <>
+      <defs>
+        <filter id={`${id}-blur`} x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation={4 + 18 * k} /></filter>
+      </defs>
+      {parts}
     </>
   );
 };
@@ -293,7 +438,16 @@ export const Book: React.FC<{film: BookFilm; outroText?: {title: string; sub?: s
   const {S} = film;
   const f = Math.min(frame, S.end);
   const st = stateAt(S, f);
-  const get = (spread: number, side: Side) => S.pages[spread]?.[side] ?? [];
+  // a page shows only what was drawn since it was last torn out; a stub lies on it afterwards
+  const get = (spread: number, side: Side) => {
+    const t = tearOf(S, spread, side, f);
+    const sl = S.pages[spread]?.[side] ?? [];
+    return t ? sl.filter((x) => x.start >= t.start) : sl;
+  };
+  const stub = (spread: number, side: Side) => {
+    const t = tearOf(S, spread, side, f);
+    return !!t && f >= t.end;
+  };
   const tr = st.turn;
   const peel = tr && tr.kind === 'peel' ? tr : null;
   const geo = peel ? turnGeometry(turnEase(st.p), peel.dir, PW, PH) : null;
@@ -323,14 +477,17 @@ export const Book: React.FC<{film: BookFilm; outroText?: {title: string; sub?: s
 
   // what lies where
   const a = st.spread;
+  const tearing = tr ? null : S.tears.find((t) => t.spread === a && f >= t.start && f < t.end) ?? null;
   let base: React.ReactNode;
-  if (tr && !peel) {
-    base = <SwingTurn tr={tr} p={st.p} frame={f} get={get} total={total} />;
+  if (tearing) {
+    base = <TearUnder tear={tearing} frame={f} S={S} get={get} stub={stub} />;
+  } else if (tr && !peel) {
+    base = <SwingTurn tr={tr} p={st.p} frame={f} get={get} stub={stub} total={total} />;
   } else if (!peel || !geo) {
     base = (
       <>
-        <Page side="left" slots={get(a, 'left')} frame={f} id={`s${a}l`} pencil />
-        <Page side="right" slots={get(a, 'right')} frame={f} id={`s${a}r`} pencil />
+        <Page side="left" slots={get(a, 'left')} frame={f} id={`s${a}l`} pencil stub={stub(a, 'left')} />
+        <Page side="right" slots={get(a, 'right')} frame={f} id={`s${a}r`} pencil stub={stub(a, 'right')} />
       </>
     );
   } else {
@@ -340,16 +497,16 @@ export const Book: React.FC<{film: BookFilm; outroText?: {title: string; sub?: s
     const backSide: Side = fwd ? 'left' : 'right'; // where the sheet's back ends up
     base = (
       <>
-        <Page side={still} slots={get(peel.from, still)} frame={f} id={`s${peel.from}${still[0]}`} />
+        <Page side={still} slots={get(peel.from, still)} frame={f} id={`s${peel.from}${still[0]}`} stub={stub(peel.from, still)} />
         {/* revealed underneath: the next spread's page on the moving side */}
-        <Page side={moving} slots={get(peel.to, moving)} frame={f} id={`s${peel.to}${moving[0]}u`} />
+        <Page side={moving} slots={get(peel.to, moving)} frame={f} id={`s${peel.to}${moving[0]}u`} stub={stub(peel.to, moving)} />
         {/* shadow of the lifted sheet on the revealed page */}
         <path d={polyD(geo.flat.length ? sheetRect(moving) : [])} fill="url(#under-shadow)" clipPath="url(#reveal-clip)" opacity={k} />
         <clipPath id="reveal-clip"><path d={polyD(sheetRect(moving))} /></clipPath>
         {/* the part of the sheet still flat */}
         <clipPath id="flat-clip"><path d={polyD(geo.flat)} /></clipPath>
         <g clipPath="url(#flat-clip)">
-          <Page side={moving} slots={get(peel.from, moving)} frame={f} id={`s${peel.from}${moving[0]}`} />
+          <Page side={moving} slots={get(peel.from, moving)} frame={f} id={`s${peel.from}${moving[0]}`} stub={stub(peel.from, moving)} />
         </g>
         {/* under the flap; together with the fading one on top it adds up to the usual shadow */}
         <SpineShade opacity={k} />
@@ -364,7 +521,7 @@ export const Book: React.FC<{film: BookFilm; outroText?: {title: string; sub?: s
         <clipPath id="flap-clip"><path d={polyD(geo.flap)} /></clipPath>
         <g clipPath="url(#flap-clip)">
           <g transform={geo.backMatrix}>
-            <Page side={backSide} slots={get(peel.to, backSide)} frame={f} id={`s${peel.to}${backSide[0]}b`} />
+            <Page side={backSide} slots={get(peel.to, backSide)} frame={f} id={`s${peel.to}${backSide[0]}b`} stub={stub(peel.to, backSide)} />
           </g>
           <path d={polyD(geo.flap)} fill="url(#flap-shade)" opacity={k} />
         </g>
@@ -418,6 +575,7 @@ export const Book: React.FC<{film: BookFilm; outroText?: {title: string; sub?: s
         <Block side="right" t={tR} />
         {base}
         {!tr && <SpineShade />}
+        {tearing && <TearPiece tear={tearing} frame={f} S={S} />}
         {peel && k < 1 && <SpineShade opacity={1 - k} />}
         {/* the binding line stays on top of riffling sheets: they are bound there */}
         {tr && !peel && <rect x={-1} y={0} width={2} height={PH} fill={SPINE_TONE} opacity={0.45} />}
