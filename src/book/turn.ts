@@ -97,3 +97,46 @@ export const turnGeometry = (p: number, dir: 1 | -1, PW: number, PH: number): Tu
 };
 
 export const polyD = (pts: Pt[]) => (pts.length ? `M${pts.map((q) => `${q.x.toFixed(2)} ${q.y.toFixed(2)}`).join(' L')} Z` : '');
+
+/* ---------------- riffle and bulk: sheets swinging about the spine ---------------- */
+
+/** ease in and out: the pace of a sheet swinging over in a riffle or a block turn */
+export const swingEase = (u: number) => {
+  const c = Math.min(1, Math.max(0, u));
+  return c < 0.5 ? 2 * c * c : 1 - (-2 * c + 2) ** 2 / 2;
+};
+
+/** In a riffle of n sheets at progress p (0..1): each sheet's own progress (0 lying where it
+ *  started .. 1 landed). They lift one after another, each taking a quarter of the riffle. */
+export const riffleProgress = (p: number, n: number): number[] =>
+  Array.from({length: n}, (_, i) => Math.min(1, Math.max(0, (p - (n > 1 ? (i / (n - 1)) * 0.76 : 0)) / (n > 1 ? 0.24 : 1))));
+
+/** How much of the way the stacks have traded their sheets during a turn at progress p (0..1). */
+export const stackProgress = (kind: 'peel' | 'riffle' | 'bulk', p: number, sheets: number) => {
+  if (kind === 'peel') return turnEase(p);
+  if (kind === 'bulk') return swingEase(p);
+  const us = riffleProgress(p, sheets);
+  return us.reduce((a, u) => a + swingEase(u), 0) / sheets;
+};
+
+/**
+ * A sheet swinging about the spine, seen from above, at angle th (0: lying on the right page,
+ * PI: lying on the left page). Its outer edge moves in to the spine and out the other side, the
+ * edge nearer the camera grows a little, and the sheet curls: it rises steeply from the spine, then
+ * bends over towards its edge. `content` scales a page drawn at its flat position onto the sheet
+ * (exact when the sheet lies flat). `steep` is 0 lying flat, 1 standing upright.
+ */
+export const fanSheet = (th: number, PW: number, PH: number) => {
+  const c = Math.cos(th);
+  const sn = Math.sin(th);
+  const ex = PW * c;
+  const lift = 70 * sn;
+  const top = -lift * 0.6;
+  const bot = PH + lift * 0.4;
+  const k1x = ex * 0.15 + Math.sign(c || 1) * 120 * sn;
+  const k2x = ex * 0.7;
+  const d = `M0 0 C${k1x.toFixed(2)} ${(top * 0.3).toFixed(2)} ${k2x.toFixed(2)} ${top.toFixed(2)} ${ex.toFixed(2)} ${top.toFixed(2)} ` +
+    `L${ex.toFixed(2)} ${bot.toFixed(2)} C${k2x.toFixed(2)} ${bot.toFixed(2)} ${k1x.toFixed(2)} ${(PH + (bot - PH) * 0.3).toFixed(2)} 0 ${PH} Z`;
+  const content = `translate(0 ${top.toFixed(3)}) scale(${Math.abs(c).toFixed(5)} ${((bot - top) / PH).toFixed(5)})`;
+  return {d, c, sn, ex, top, bot, content, steep: 1 - Math.abs(c), side: (c >= 0 ? 'right' : 'left') as 'left' | 'right'};
+};

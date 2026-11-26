@@ -6,6 +6,7 @@ import {AvatarFace, AvatarIcon, Banner, Watermark, WordmarkLogo} from './brand/B
 import {FILMS, WIDE} from './pencil/plan';
 import {LONG} from './stories/current';
 import {Book} from './book/Book';
+import {BOOK_LAB} from './book/BookLab';
 import {MISSING_PIECE, MISSING_PIECE_KOKORO, MISSING_PIECE_SHORT, MISSING_PIECE_SHORT_KOKORO, MISSING_PIECE_YOUTUBE} from './stories/missing-piece/film';
 import {NOTE_LAB, NoteLab} from './pencil/NoteLab';
 import {MissingPieceCover, MissingPieceThumb} from './stories/missing-piece/ReleaseArt';
@@ -42,6 +43,8 @@ export const RemotionRoot: React.FC = () => (
     <Composition id="MissingPieceReels" component={Book}
       defaultProps={{film: MISSING_PIECE_SHORT_KOKORO, layout: 'tall' as const, outroText: {title: 'Keep going.', sub: 'Follow for one reason a day to keep going.'}}}
       width={1080} height={1920} fps={30} durationInFrames={MISSING_PIECE_SHORT_KOKORO.total} />
+    <Composition id="BookLab" component={Book} defaultProps={{film: BOOK_LAB}}
+      width={2560} height={1440} fps={30} durationInFrames={BOOK_LAB.total} />
     <Still id="MissingPieceThumb" component={MissingPieceThumb} width={1280} height={720} />
     <Still id="MissingPieceCover" component={MissingPieceCover} width={1080} height={1920} />
     <Still id="NoteLab" component={NoteLab} width={NOTE_LAB.w} height={NOTE_LAB.h} />
