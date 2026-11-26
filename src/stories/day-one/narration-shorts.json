@@ -1,0 +1,205 @@
+[
+ {
+  "id": "hook",
+  "mark": "open",
+  "text": "[serious] This is his ninth day one."
+ },
+ {
+  "id": "hook2",
+  "mark": "hook2",
+  "text": "[quietly] And he is about to stop counting.",
+  "gap": 0.91
+ },
+ {
+  "id": "mirror",
+  "mark": "mirror",
+  "text": "[thoughtful] It started with a mirror.",
+  "gap": 0.28
+ },
+ {
+  "id": "mirror2",
+  "mark": "mirror2",
+  "text": "Tired eyes. Shaking hands. A man he didn't recognize.",
+  "gap": 0.42
+ },
+ {
+  "id": "habit",
+  "mark": "habit",
+  "text": "[low] Everyone has one thing they keep going back to.",
+  "gap": 0.21
+ },
+ {
+  "id": "habit2",
+  "mark": "habit2",
+  "text": "[low] His had been winning for years.",
+  "gap": 0.56
+ },
+ {
+  "id": "calendar",
+  "mark": "calendar",
+  "text": "[determined] So he hung a calendar on the wall. And drew one small line.",
+  "gap": 0.28
+ },
+ {
+  "id": "day1",
+  "mark": "day1",
+  "text": "[determined] [quietly, a fresh start] Day one.",
+  "gap": 0.7
+ },
+ {
+  "id": "d2",
+  "mark": "d2",
+  "text": "[hopeful, growing confidence] Day two... Day three... He felt it working.",
+  "gap": 0.35
+ },
+ {
+  "id": "fall1",
+  "mark": "fall1",
+  "text": "[heavily] Then a bad day at work. And by night, it was over.",
+  "gap": 0.49
+ },
+ {
+  "id": "reset1",
+  "mark": "reset1",
+  "text": "[tired] He tore the page down.",
+  "gap": 0.35
+ },
+ {
+  "id": "reset1b",
+  "mark": "reset1b",
+  "text": "[tired] Day one. Again.",
+  "gap": 0.7
+ },
+ {
+  "id": "montage",
+  "mark": "montage",
+  "text": "[slowly] Eleven days. Nineteen. Twenty-six.",
+  "gap": 0.21
+ },
+ {
+  "id": "best",
+  "mark": "best",
+  "text": "[hopeful] Then, his best run yet. Forty days.",
+  "gap": 0.21
+ },
+ {
+  "id": "best2",
+  "mark": "best2",
+  "text": "[warmly] He slept through the night.",
+  "gap": 0.21
+ },
+ {
+  "id": "best2b",
+  "mark": "best2b",
+  "text": "[warmly] He laughed again.",
+  "gap": 0.35
+ },
+ {
+  "id": "fall8",
+  "mark": "fall8",
+  "text": "[heavily] Day forty-one... he fell.",
+  "gap": 0.84
+ },
+ {
+  "id": "low",
+  "mark": "low",
+  "text": "[softly] That night, he stood in front of the calendar.",
+  "gap": 0.28
+ },
+ {
+  "id": "low2",
+  "mark": "low2",
+  "text": "[exhausted] Nine attempts. Nine day ones.",
+  "gap": 0.35
+ },
+ {
+  "id": "low3",
+  "mark": "low3",
+  "text": "[broken] He ripped it off the wall.",
+  "gap": 0.35
+ },
+ {
+  "id": "low3b",
+  "mark": "low3b",
+  "text": "[broken] Why even count?",
+  "gap": 1.12
+ },
+ {
+  "id": "floor",
+  "mark": "floor",
+  "text": "[sad] [quietly, still broken] The torn pages... lay on the floor.",
+  "gap": 0.35
+ },
+ {
+  "id": "floor2",
+  "mark": "floor2",
+  "text": "[gently] And for the first time, he looked at them side by side.",
+  "gap": 0.77
+ },
+ {
+  "id": "bars",
+  "mark": "bars",
+  "text": "[slowly] Two days. Three. Five. Eight.",
+  "gap": 0.21
+ },
+ {
+  "id": "bars2",
+  "mark": "bars2",
+  "text": "[building] Eleven. Nineteen. Twenty-six. Forty.",
+  "gap": 0.63
+ },
+ {
+  "id": "climb",
+  "mark": "climb",
+  "text": "[moved] Every run... was longer than the one before.",
+  "gap": 0.42
+ },
+ {
+  "id": "climb2",
+  "mark": "climb2",
+  "text": "[with conviction] He hadn't been failing. [pause] He had been climbing.",
+  "gap": 0.84
+ },
+ {
+  "id": "zero",
+  "mark": "zero",
+  "text": "[firmly] Day one was never zero.",
+  "gap": 0.21
+ },
+ {
+  "id": "zero2",
+  "mark": "zero2",
+  "text": "[firmly] It was day one, with everything he'd learned.",
+  "gap": 0.84
+ },
+ {
+  "id": "rise",
+  "mark": "rise",
+  "text": "[building] Day forty-one came. And went.",
+  "gap": 0.28
+ },
+ {
+  "id": "rise2",
+  "mark": "rise2",
+  "text": "[building] Fifty. Seventy. One hundred.",
+  "gap": 0.42
+ },
+ {
+  "id": "you",
+  "mark": "you",
+  "text": "[earnest] [warm, building hope] If today is your day one again...",
+  "gap": 0.21
+ },
+ {
+  "id": "you2",
+  "mark": "you2",
+  "text": "[with conviction] Starting over is not starting from zero.",
+  "gap": 0.84
+ },
+ {
+  "id": "keep",
+  "mark": "keep",
+  "text": "[softly] [warm, heartfelt, encouraging] Keep going.",
+  "speed": 0.85
+ }
+]

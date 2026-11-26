@@ -7,9 +7,12 @@ import {FILMS, WIDE} from './pencil/plan';
 import {LONG} from './stories/current';
 import {Book} from './book/Book';
 import {BOOK_LAB} from './book/BookLab';
+import {DAY_ONE, DAY_ONE_KOKORO, DAY_ONE_SHORT, DAY_ONE_SHORT_KOKORO, DAY_ONE_YOUTUBE} from './stories/day-one/film';
+import {MirrorLab} from './stories/day-one/MirrorLab';
 import {MISSING_PIECE, MISSING_PIECE_KOKORO, MISSING_PIECE_SHORT, MISSING_PIECE_SHORT_KOKORO, MISSING_PIECE_YOUTUBE} from './stories/missing-piece/film';
 import {NOTE_LAB, NoteLab} from './pencil/NoteLab';
 import {MissingPieceCover, MissingPieceThumb} from './stories/missing-piece/ReleaseArt';
+import {DayOneCover, DayOneThumb} from './stories/day-one/ReleaseArt';
 
 const even = (n: number) => Math.ceil(n / 2) * 2;
 
@@ -43,8 +46,26 @@ export const RemotionRoot: React.FC = () => (
     <Composition id="MissingPieceReels" component={Book}
       defaultProps={{film: MISSING_PIECE_SHORT_KOKORO, layout: 'tall' as const, outroText: {title: 'Keep going.', sub: 'Follow for one reason a day to keep going.'}}}
       width={1080} height={1920} fps={30} durationInFrames={MISSING_PIECE_SHORT_KOKORO.total} />
+    <Composition id="DayOneWide" component={Book}
+      defaultProps={{film: DAY_ONE, outroText: {title: 'Keep going.', sub: 'Follow for one reason a day to keep going.'}}}
+      width={2560} height={1440} fps={30} durationInFrames={DAY_ONE.total} />
+    <Composition id="DayOneKokoro" component={Book}
+      defaultProps={{film: DAY_ONE_KOKORO, outroText: {title: 'Keep going.', sub: 'Follow for one reason a day to keep going.'}}}
+      width={2560} height={1440} fps={30} durationInFrames={DAY_ONE_KOKORO.total} />
+    <Composition id="DayOneYouTube" component={Book}
+      defaultProps={{film: DAY_ONE_YOUTUBE, outroText: {title: 'Keep going.', sub: 'Follow for one reason a day to keep going.'}}}
+      width={2560} height={1440} fps={30} durationInFrames={DAY_ONE_YOUTUBE.total} />
+    <Composition id="DayOneShortsKokoro" component={Book}
+      defaultProps={{film: DAY_ONE_SHORT_KOKORO, layout: 'tall' as const, outroText: {title: 'Keep going.', sub: 'Follow for one reason a day to keep going.'}}}
+      width={1440} height={2560} fps={30} durationInFrames={DAY_ONE_SHORT_KOKORO.total} />
+    <Composition id="DayOneShortsLiam" component={Book}
+      defaultProps={{film: DAY_ONE_SHORT, layout: 'tall' as const, outroText: {title: 'Keep going.', sub: 'Follow for one reason a day to keep going.'}}}
+      width={1440} height={2560} fps={30} durationInFrames={DAY_ONE_SHORT.total} />
+    <Still id="DayOneMirrorLab" component={MirrorLab} width={2400} height={640} />
     <Composition id="BookLab" component={Book} defaultProps={{film: BOOK_LAB}}
       width={2560} height={1440} fps={30} durationInFrames={BOOK_LAB.total} />
+    <Still id="DayOneThumb" component={DayOneThumb} width={1280} height={720} />
+    <Still id="DayOneCover" component={DayOneCover} width={1080} height={1920} />
     <Still id="MissingPieceThumb" component={MissingPieceThumb} width={1280} height={720} />
     <Still id="MissingPieceCover" component={MissingPieceCover} width={1080} height={1920} />
     <Still id="NoteLab" component={NoteLab} width={NOTE_LAB.w} height={NOTE_LAB.h} />

@@ -4,7 +4,7 @@
 import React from 'react';
 import {AbsoluteFill, Easing, interpolate} from 'remotion';
 
-import type {DrawItem, Slot} from './draw';
+import {textWidth, type DrawItem, type Slot} from './draw';
 import {INK, PAPER, RED, box, heart} from './art';
 import {marks, stick} from './stick';
 import {HAND_FONT} from './fonts';
@@ -12,7 +12,12 @@ import {Strokes} from './Journey';
 
 /** Items shown fully drawn (no pencil animation). */
 export const staticSlots = (items: DrawItem[]): Slot[] =>
-  items.map((item, i) => ({item, i, start: -2, end: -1, len: 1, p0: {x: 0, y: 0}, p1: {x: 0, y: 0}, x0: item.x ?? 0, x1: item.x ?? 0}));
+  items.map((item, i) => {
+    // a centred text starts half its width left of x, as in plan()
+    const x0 = item.center ? (item.x ?? 0) - textWidth(item) / 2 : item.x ?? 0;
+    // long finished, so fills that fade in after their stroke are fully in
+    return {item, i, start: -40, end: -30, len: 1, p0: {x: 0, y: 0}, p1: {x: 0, y: 0}, x0, x1: x0};
+  });
 
 const PAPER_BG: React.CSSProperties = {
   backgroundColor: PAPER,

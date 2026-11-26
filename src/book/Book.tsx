@@ -409,16 +409,59 @@ const tallCamera = (S: Schedule, total: number) => {
       continue;
     }
     const pg = S.pages[st.spread];
+    // a page being torn out: frame it from just before the rip, and stay on it afterwards until
+    // something new is drawn (the drawing after a tear goes onto the page it revealed; strokes
+    // made before the tear must not pull the camera back across the spread)
+    let since = -Infinity;
+    let tornSide: Side | null = null;
+    for (const t of S.tears) if (t.spread === st.spread && f >= t.start - 25 && t.start > since) { since = t.start; tornSide = t.side; }
     // the side of the latest stroke begun (looking slightly ahead, so the camera arrives first)
     let best = -Infinity;
     for (const side of ['left', 'right'] as const) {
-      for (const sl of pg?.[side] ?? []) if (sl.start <= f + 20 && sl.start > best) { best = sl.start; lastSide = side; }
+      for (const sl of pg?.[side] ?? []) if (sl.start >= since && sl.start <= f + 20 && sl.start > best) { best = sl.start; lastSide = side; }
+    }
+    if (tornSide && best === -Infinity) {
+      lastSide = tornSide;
+      cx.push(tornSide === 'left' ? -PW / 2 : PW / 2);
+      w.push(PAGE_VIEW);
+      continue;
+    }
+    // nothing begun yet on this spread: frame the page the pencil will start on (not the page the
+    // camera happened to be on before the turn, which would show an empty page, then pan across)
+    if (best === -Infinity) {
+      let first = Infinity;
+      for (const side of ['left', 'right'] as const) {
+        for (const sl of pg?.[side] ?? []) if (sl.start > f && sl.start < first) { first = sl.start; lastSide = side; }
+      }
     }
     cx.push(lastSide === 'left' ? -PW / 2 : PW / 2);
     w.push(PAGE_VIEW);
   }
+  // no ping-pong: a stay on one page shorter than MIN_STAY between stays on the other page (the
+  // action hopping across the spread) is shown as the whole spread instead, merged with its
+  // neighbours, so the camera pulls back once rather than panning left-right-left
+  const MIN_STAY = 140;
+  for (let pass = 0; pass < 4; pass++) {
+    const runs: {a: number; b: number; v: number}[] = [];
+    for (let f = 0; f < cx.length; f++) {
+      const v = w[f] > PAGE_VIEW + 1 ? 0 : Math.sign(cx[f]);
+      if (runs.length && runs[runs.length - 1].v === v) runs[runs.length - 1].b = f + 1;
+      else runs.push({a: f, b: f + 1, v});
+    }
+    let changed = false;
+    for (let i = 1; i < runs.length - 1; i++) {
+      const r = runs[i];
+      // a short stay on one page with the other page (or the whole spread) on either side
+      if (r.v !== 0 && r.b - r.a < MIN_STAY && (runs[i - 1].v !== r.v || runs[i + 1].v !== r.v) && (runs[i - 1].v === -r.v || runs[i + 1].v === -r.v || runs[i - 1].v === 0 && runs[i + 1].v === 0)) {
+        for (let f = r.a; f < r.b; f++) { cx[f] = 0; w[f] = SPREAD_VIEW; }
+        changed = true;
+      }
+    }
+    if (!changed) break;
+  }
   return {cx: blur(blur(blur(cx, 10), 10), 10), w: blur(blur(blur(w, 10), 10), 10)};
 };
+export const tallCameraFor = (S: Schedule, total: number) => tallCamera(S, total);
 const CAMERAS = new WeakMap<Schedule, ReturnType<typeof tallCamera>>();
 
 export type BookLayout = 'wide' | 'tall';
@@ -583,7 +626,7 @@ export const Book: React.FC<{film: BookFilm; outroText?: {title: string; sub?: s
       </svg>
       {outroText && (
         <>
-          <AbsoluteFill style={{background: `rgba(20,18,17,${0.6 * outroIn})`}} />
+          <AbsoluteFill style={{background: `rgba(20,18,17,${0.75 * outroIn})`}} />
           <AbsoluteFill style={{alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 40}}>
             <div style={{fontFamily: HAND_FONT, fontWeight: 700, fontSize: Math.min(screenW, screenH) * 0.16, color: PAPER, opacity: outroIn,
               transform: `translateY(${(1 - outroIn) * 30}px)`}}>{outroText.title}</div>

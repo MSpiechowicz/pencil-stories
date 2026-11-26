@@ -29,7 +29,7 @@ export type Step = {
   /** tear out the page on `side` of this step's spread (after arriving, before drawing): the rip
    *  runs down by the spine, the page bends with the pull and slides off the desk, a ragged stub
    *  stays in the gutter. The step's drawings then go onto the page revealed underneath. */
-  tear?: {side: 'left' | 'right'; frames?: number};
+  tear?: {side: 'left' | 'right'; frames?: number; /** a narration line with this mark starts as the rip begins */ mark?: string};
   /** draw the right page before the left (so narration anchored on both follows the story order) */
   rightFirst?: boolean;
   /** >1 draws faster */
@@ -122,13 +122,22 @@ export const schedule = (steps: Step[], narration: Narration[] = [], voice: Reco
       arrive(at + dir);
       if (at !== st.spread) t += st.flipGap ?? 2;
     }
+    let spokeTear = false;
     if (st.tear) {
       const frames = st.tear.frames ?? TEAR_FRAMES;
+      // the line said over the tear: the rip waits for the narrator to finish the previous line
+      const line = st.tear.mark ? narration.find((n) => n.mark === st.tear!.mark && voice[n.id]) : undefined;
+      if (line) {
+        t = Math.max(t, Math.ceil(busy));
+        lines.push({id: line.id, start: t});
+        busy = t + voice[line.id];
+        spokeTear = true;
+      }
       tears.push({spread: st.spread, side: st.tear.side, start: t, end: t + frames});
       t += frames + 8;
     }
     t += st.pause ?? (turns.length && turns[turns.length - 1].end === t ? 10 : 0);
-    let spoke = false;
+    let spoke = spokeTear;
     for (const side of st.rightFirst ? (['right', 'left'] as const) : (['left', 'right'] as const)) {
       const items = st[side];
       if (!items?.length) continue;

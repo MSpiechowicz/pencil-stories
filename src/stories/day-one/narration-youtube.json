@@ -1,0 +1,337 @@
+[
+ {
+  "id": "hook",
+  "mark": "open",
+  "text": "[serious] This is his ninth day one."
+ },
+ {
+  "id": "hook2",
+  "mark": "hook2",
+  "text": "[quietly] And he is about to stop counting.",
+  "gap": 2.6
+ },
+ {
+  "id": "mirror",
+  "mark": "mirror",
+  "text": "[thoughtful] It started with a mirror.",
+  "gap": 0.8
+ },
+ {
+  "id": "mirror2",
+  "mark": "mirror2",
+  "text": "Tired eyes. Shaking hands. A man he didn't recognize.",
+  "gap": 1.2
+ },
+ {
+  "id": "habit",
+  "mark": "habit",
+  "text": "[low] Everyone has one thing they keep going back to.",
+  "gap": 0.6
+ },
+ {
+  "id": "habit2",
+  "mark": "habit2",
+  "text": "[low] His had been winning for years.",
+  "gap": 1.6
+ },
+ {
+  "id": "calendar",
+  "mark": "calendar",
+  "text": "[determined] So he hung a calendar on the wall. And drew one small line.",
+  "gap": 0.8
+ },
+ {
+  "id": "day1",
+  "mark": "day1",
+  "text": "[determined] [quietly, a fresh start] Day one.",
+  "gap": 2.0
+ },
+ {
+  "id": "d2",
+  "mark": "d2",
+  "text": "[hopeful, growing confidence] Day two... Day three... He felt it working.",
+  "gap": 1.0
+ },
+ {
+  "id": "fall1",
+  "mark": "fall1",
+  "text": "[heavily] Then a bad day at work. And by night, it was over.",
+  "gap": 1.4
+ },
+ {
+  "id": "reset1",
+  "mark": "reset1",
+  "text": "[tired] He tore the page down.",
+  "gap": 1.0
+ },
+ {
+  "id": "reset1b",
+  "mark": "reset1b",
+  "text": "[tired] Day one. Again.",
+  "gap": 2.0
+ },
+ {
+  "id": "try2",
+  "mark": "try2",
+  "text": "[a little hope returning] Five days... the next time.",
+  "gap": 0.4
+ },
+ {
+  "id": "fall2",
+  "mark": "fall2",
+  "text": "[heavily, slipping] A party. Friends. Come on... just one.",
+  "gap": 1.0
+ },
+ {
+  "id": "reset2",
+  "mark": "reset2",
+  "text": "[tired, quietly] Day one.",
+  "gap": 1.4
+ },
+ {
+  "id": "try3",
+  "mark": "try3",
+  "text": "[a little stronger] Eight days.",
+  "gap": 0.4
+ },
+ {
+  "id": "fall3",
+  "mark": "fall3",
+  "text": "[sad] A phone call. Bad news. He was alone with it.",
+  "gap": 1.0
+ },
+ {
+  "id": "reset3",
+  "mark": "reset3",
+  "text": "[wearily] Day one.",
+  "gap": 1.6
+ },
+ {
+  "id": "montage",
+  "mark": "montage",
+  "text": "[slowly] Eleven days. Nineteen. Twenty-six.",
+  "gap": 0.6
+ },
+ {
+  "id": "montage2",
+  "mark": "montage2",
+  "text": "[heavily] And every time... the same red line through the same small number.",
+  "gap": 1.6
+ },
+ {
+  "id": "shame",
+  "mark": "shame",
+  "text": "[quietly, ashamed] He stopped telling people he was trying.",
+  "gap": 0.6
+ },
+ {
+  "id": "shame2",
+  "mark": "shame2",
+  "text": "[quietly, ashamed] Saying it out loud only made the falling louder.",
+  "gap": 1.2
+ },
+ {
+  "id": "voice",
+  "mark": "voice",
+  "text": "[bitterly] And a voice in his head kept score. You always quit. You always will.",
+  "gap": 2.0
+ },
+ {
+  "id": "best",
+  "mark": "best",
+  "text": "[hopeful] Then, his best run yet. Forty days.",
+  "gap": 0.6
+ },
+ {
+  "id": "best2",
+  "mark": "best2",
+  "text": "[warmly] He slept through the night.",
+  "gap": 0.6
+ },
+ {
+  "id": "best2b",
+  "mark": "best2b",
+  "text": "[warmly] He laughed again.",
+  "gap": 1.0
+ },
+ {
+  "id": "fall8",
+  "mark": "fall8",
+  "text": "[heavily] Day forty-one... he fell.",
+  "gap": 2.4
+ },
+ {
+  "id": "low",
+  "mark": "low",
+  "text": "[softly] That night, he stood in front of the calendar.",
+  "gap": 0.8
+ },
+ {
+  "id": "low2",
+  "mark": "low2",
+  "text": "[exhausted] Nine attempts. Nine day ones.",
+  "gap": 1.0
+ },
+ {
+  "id": "low3",
+  "mark": "low3",
+  "text": "[broken] He ripped it off the wall.",
+  "gap": 1.0
+ },
+ {
+  "id": "low3b",
+  "mark": "low3b",
+  "text": "[broken] Why even count?",
+  "gap": 3.2
+ },
+ {
+  "id": "floor",
+  "mark": "floor",
+  "text": "[sad] [quietly, still broken] The torn pages... lay on the floor.",
+  "gap": 1.0
+ },
+ {
+  "id": "floor2",
+  "mark": "floor2",
+  "text": "[gently] And for the first time, he looked at them side by side.",
+  "gap": 2.2
+ },
+ {
+  "id": "bars",
+  "mark": "bars",
+  "text": "[slowly] Two days. Three. Five. Eight.",
+  "gap": 0.6
+ },
+ {
+  "id": "bars2",
+  "mark": "bars2",
+  "text": "[building] Eleven. Nineteen. Twenty-six... [proudly, letting it ring] Forty.",
+  "gap": 1.8
+ },
+ {
+  "id": "climb",
+  "mark": "climb",
+  "text": "[moved] Every run... was longer than the one before.",
+  "gap": 1.2
+ },
+ {
+  "id": "climb2",
+  "mark": "climb2",
+  "text": "[with conviction] He hadn't been failing... He had been climbing.",
+  "gap": 2.4
+ },
+ {
+  "id": "notes",
+  "mark": "notes",
+  "text": "[thoughtful, warm] And every fall had left him something.",
+  "gap": 0.8
+ },
+ {
+  "id": "note1",
+  "mark": "note1",
+  "text": "[gently, realizing] Day three taught him: bad days need a plan.",
+  "gap": 0.6
+ },
+ {
+  "id": "note2",
+  "mark": "note2",
+  "text": "[gently] Day five taught him to say no, and leave early.",
+  "gap": 0.6
+ },
+ {
+  "id": "note3",
+  "mark": "note3",
+  "text": "[gently] Day eight taught him to call someone, instead of carrying it alone.",
+  "gap": 0.6
+ },
+ {
+  "id": "note4",
+  "mark": "note4",
+  "text": "[warmly, moved] Day forty taught him what his life could feel like.",
+  "gap": 2.0
+ },
+ {
+  "id": "zero",
+  "mark": "zero",
+  "text": "[firmly] Day one was never zero.",
+  "gap": 0.6
+ },
+ {
+  "id": "zero2",
+  "mark": "zero2",
+  "text": "[firmly] It was day one, with everything he'd learned.",
+  "gap": 2.4
+ },
+ {
+  "id": "rehang",
+  "mark": "rehang",
+  "text": "[determined] So he taped the pages back together. And hung a new calendar beside them.",
+  "gap": 0.8
+ },
+ {
+  "id": "tell",
+  "mark": "tell",
+  "text": "[warmly, quietly proud] This time, he told a friend.",
+  "gap": 1.6
+ },
+ {
+  "id": "rise",
+  "mark": "rise",
+  "text": "[building] Day forty-one came. And went.",
+  "gap": 0.8
+ },
+ {
+  "id": "rise2",
+  "mark": "rise2",
+  "text": "[building] Fifty. Seventy. One hundred.",
+  "gap": 1.2
+ },
+ {
+  "id": "rise3",
+  "mark": "rise3",
+  "text": "[proudly] The line grew right off the top of the chart.",
+  "gap": 2.2
+ },
+ {
+  "id": "mirror3",
+  "mark": "mirror3",
+  "text": "[warmly] One morning... the mirror again.",
+  "gap": 0.6
+ },
+ {
+  "id": "mirror4",
+  "mark": "mirror4",
+  "text": "[moved] Clear eyes. Steady hands... He knew this man.",
+  "gap": 2.6
+ },
+ {
+  "id": "honest",
+  "mark": "honest",
+  "text": "[calm, honest] Maybe he'll fall again someday.",
+  "gap": 0.6
+ },
+ {
+  "id": "honest2",
+  "mark": "honest2",
+  "text": "[with conviction] But he will never start from zero.",
+  "gap": 2.8
+ },
+ {
+  "id": "you",
+  "mark": "you",
+  "text": "[earnest] [warm, building hope] If today is your day one again...",
+  "gap": 0.6
+ },
+ {
+  "id": "you2",
+  "mark": "you2",
+  "text": "[with conviction] Starting over is not starting from zero.",
+  "gap": 2.4
+ },
+ {
+  "id": "keep",
+  "mark": "keep",
+  "text": "[softly] [warm, heartfelt, encouraging] Keep going.",
+  "speed": 0.85
+ }
+]

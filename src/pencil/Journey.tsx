@@ -1,7 +1,7 @@
 // Renders the single long page: paper, everything drawn so far, the pencil, and the camera.
 import React from 'react';
 import {AbsoluteFill, Easing, interpolate, staticFile, useCurrentFrame} from 'remotion';
-import {evolvePath} from '@remotion/paths';
+import {evolvePath, getLength} from '@remotion/paths';
 import {pencilAt, progressOf, textWidth, type Slot} from './draw';
 import {INK, PAPER} from './art';
 import {HAND_FONT} from './fonts';
@@ -22,6 +22,26 @@ export const PencilTip: React.FC<{x: number; y: number}> = ({x, y}) => (
     <path d="M10 -26 L70 -176" stroke="#d99a2b" strokeWidth={3} />
   </g>
 );
+
+/**
+ * A path made of several pieces (M ... M ...) is drawn piece after piece. The browser restarts a
+ * dash pattern at every piece, so one dash over the whole path would reveal all the pieces at once,
+ * ahead of the pencil; each piece gets its own dash instead, in step with the pencil.
+ */
+const PIECES = new Map<string, {d: string; a: number; b: number}[]>();
+const piecesOf = (d: string) => {
+  let out = PIECES.get(d);
+  if (!out) {
+    const subs = d.split(/(?=M)/).map((x) => x.trim()).filter(Boolean);
+    let at = 0;
+    out = subs.map((sd) => { const len = getLength(sd); const r = {d: sd, a: at, b: at + len}; at += len; return r; });
+    PIECES.set(d, out);
+  }
+  return out;
+};
+
+/** frames a shape's fill takes to fade in after its outline is closed */
+const FILL_FADE = 8;
 
 /** `idPrefix`: keeps clip ids unique when the same strokes are drawn twice in one SVG (book pages) */
 export const Strokes: React.FC<{frame: number; slots: Slot[]; idPrefix?: string}> = ({frame, slots, idPrefix = ''}) => (
@@ -48,6 +68,22 @@ export const Strokes: React.FC<{frame: number; slots: Slot[]; idPrefix?: string}
         );
       }
       const done = p >= 1;
+      const pieces = !done && !it.tube && !it.clip ? piecesOf(it.d!) : null;
+      if (pieces && pieces.length > 1) {
+        const total = pieces[pieces.length - 1].b;
+        const at = p * total;
+        return (
+          <g key={s.i} opacity={it.opacity ?? 1}>
+            {pieces.map((pc, k) => {
+              if (at <= pc.a || pc.b <= pc.a) return null;
+              const local = Math.min(1, (at - pc.a) / (pc.b - pc.a));
+              const dsh = local >= 1 ? null : evolvePath(local, pc.d);
+              return <path key={k} d={pc.d} fill="none" stroke={color} strokeWidth={it.w ?? 6.5} strokeLinecap="round" strokeLinejoin="round"
+                strokeDasharray={dsh?.strokeDasharray} strokeDashoffset={dsh?.strokeDashoffset} />;
+            })}
+          </g>
+        );
+      }
       const dash = done ? null : evolvePath(p, it.d!);
       const common = {
         d: it.d,
@@ -72,7 +108,8 @@ export const Strokes: React.FC<{frame: number; slots: Slot[]; idPrefix?: string}
             <path {...common} fill="none" stroke={color} strokeWidth={it.w ?? 6.5} clipPath={`url(#${idPrefix}clip${s.i})`} />
           </g>
         ) :
-        <path key={s.i} {...common} fill={done && it.fill ? it.fill : 'none'} fillOpacity={it.fillOpacity ?? 1}
+        <path key={s.i} {...common} fill={done && it.fill ? it.fill : 'none'}
+          fillOpacity={(it.fillOpacity ?? 1) * Math.min(1, Math.max(0, (frame - s.end) / FILL_FADE))}
           stroke={color} strokeWidth={it.w ?? 6.5} />
       );
     })}

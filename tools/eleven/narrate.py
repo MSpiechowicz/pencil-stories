@@ -4,6 +4,7 @@ Usage: tools/tts/.venv-cb/bin/python tools/eleven/narrate.py "<voice name>" [mod
 Writes public/<story>/voice/<id>.wav (same loudness chain as before) and src/stories/<story>/narration.timing.json.
 """
 import json
+import os
 import pathlib
 import subprocess
 import sys
@@ -35,7 +36,7 @@ for line in lines:
     out = VOICE / f"{line['id']}.wav"
     mp3 = out.with_suffix(".mp3")
     got = ""
-    for attempt in range(3):
+    for attempt in range(int(os.environ.get("TAKES", "3"))):  # TAKES=1: one take per line, no automatic retakes
         mp3.write_bytes(tts(line["text"], vid, model))
         segs, _ = asr.transcribe(str(mp3), beam_size=5, temperature=0.0, condition_on_previous_text=False)
         got = " ".join(s.text.strip() for s in segs)
